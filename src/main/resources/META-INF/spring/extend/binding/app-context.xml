@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	
+	
+	<bean id="myBean" class="com.douglasdb.camel.feat.core.domain.MyBean" />
+	
+	<camel:camelContext>
+		<camel:route>
+			<camel:from uri="direct:normal"/>
+			<camel:bean ref="myBean" method="sayHello(${body}, false)" />
+		</camel:route>
+		<camel:route>
+			<camel:from uri="direct:hipster"/>
+			<camel:bean ref="myBean" method="sayHello(${body}, true)" />
+		</camel:route>
+		<camel:route>
+			<camel:from uri="direct:undecided"/>
+			<camel:bean ref="myBean" method="sayHello(${body}, ${header.hipster})" />
+		</camel:route>
+	</camel:camelContext>
+
+</beans>

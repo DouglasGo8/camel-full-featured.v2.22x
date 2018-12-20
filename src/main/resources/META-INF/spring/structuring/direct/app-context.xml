@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+	<camel:camelContext>
+
+		<camel:route>
+			<camel:from uri="direct:in" />
+			<camel:transform>
+				<camel:simple>A1[ ${body} ]</camel:simple>
+			</camel:transform>
+			<camel:to uri="direct:b" />
+			<camel:transform>
+				<camel:simple>A2 [ ${body} ]</camel:simple>
+			</camel:transform>
+			<camel:to uri="mock:a" />
+		</camel:route>
+		<camel:route>
+			<camel:from uri="direct:b" />
+			<camel:transform>
+				<camel:simple>B[ ${body} ]</camel:simple>
+			</camel:transform>
+			<camel:to uri="mock:b" />
+		</camel:route>
+		
+	</camel:camelContext>
+
+
+
+</beans>

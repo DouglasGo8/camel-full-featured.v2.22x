@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+	<bean id="orderProcessor"
+		class="com.full.camel.core.structuring.route.processor.OrderProcessor" />
+		
+		
+	<camel:camelContext>
+		<camel:route startupOrder="20">
+			<camel:from uri="direct:receiveOrders"/>
+			<camel:to uri="seda:processOrders"/>
+		</camel:route>
+		<camel:route startupOrder="10">
+			<camel:from uri="seda:processOrders"/>
+			<camel:process ref="orderProcessor"/>
+		</camel:route>
+	</camel:camelContext>
+
+
+</beans>
