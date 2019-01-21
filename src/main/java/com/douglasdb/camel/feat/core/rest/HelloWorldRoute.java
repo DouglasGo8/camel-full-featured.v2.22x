@@ -5,6 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,15 +15,11 @@ import lombok.Setter;
  */
 @Data
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class HelloWorldRoute extends RouteBuilder {
 
-	private int port1;
-
-	public HelloWorldRoute() {
-		// TODO Auto-generated constructor stub
-	}
+	private final int port1;
 
 	@Override
 	public void configure() throws Exception {

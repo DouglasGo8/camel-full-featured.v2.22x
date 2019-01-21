@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "com.douglasdb.camel.feat.core",
+                "projectName": "com.douglasdb.camel.feat.core",
+                "workingDirectory": "d:\\workspace\\vscode\\camel-full-featured.v2.22x",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "com.douglasdb.camel.feat.core",
+                "projectName": "com.douglasdb.camel.feat.core",
+                "workingDirectory": "d:\\workspace\\vscode\\camel-full-featured.v2.22x",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}

@@ -47,10 +47,10 @@
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-ftp</artifactId>
 		</dependency>
-
-
-
-		
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jaxb</artifactId>
+		</dependency>
 		<!-- when using CSV data format -->
 		<dependency>
 			<groupId>org.apache.camel</groupId>
