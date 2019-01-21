@@ -32,23 +32,20 @@ public class EntryPoint extends CamelTestSupport {
 
     }
 
-    /**
-     *
-     */
-    @Override
-    protected CamelContext createCamelContext() throws Exception {
-        // TODO Auto-generated method stub
+	/**
+	 *
+	 */
+	@Override
+	protected CamelContext createCamelContext() throws Exception {
+		// TODO Auto-generated method stub
 
-        final CamelContext ctx = super.createCamelContext();
+		final CamelContext ctx = super.createCamelContext();
 
-        ctx.addComponent("acmq",
-                JmsComponent.jmsComponentAutoAcknowledge
-                        (
-                                new ActiveMQConnectionFactory("tcp://localhost:61616"))
-        );
+		ctx.addComponent("acmq",
+				JmsComponent.jmsComponentAutoAcknowledge(new ActiveMQConnectionFactory("tcp://localhost:61616")));
 
-        return ctx;
-    }
+		return ctx;
+	}
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {

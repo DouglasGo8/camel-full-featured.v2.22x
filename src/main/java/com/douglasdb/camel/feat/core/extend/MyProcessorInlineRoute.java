@@ -23,6 +23,7 @@ public class MyProcessorInlineRoute extends RouteBuilder {
 		from("direct:start")
 		
 			.process((exchange) -> {
+			
 				String result = "Unknown language";
 				
 				final Message inMessage = exchange.getIn();
@@ -35,6 +36,7 @@ public class MyProcessorInlineRoute extends RouteBuilder {
 					result = "Bonjour " + body;
 				
 				inMessage.setBody(result); })
+			
 			.log("${body}")
 			.to("mock:result");
 		
