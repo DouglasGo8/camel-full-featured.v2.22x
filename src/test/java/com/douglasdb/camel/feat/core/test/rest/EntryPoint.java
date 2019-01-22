@@ -3,12 +3,17 @@ package com.douglasdb.camel.feat.core.test.rest;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.rest.HelloWorldRoute;
+import com.douglasdb.camel.feat.core.common.MenuService;
+import com.douglasdb.camel.feat.core.rest.CafeApiRoute;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 
 /**
  * 
@@ -18,14 +23,28 @@ import com.douglasdb.camel.feat.core.rest.HelloWorldRoute;
 public class EntryPoint extends CamelTestSupport {
 
 	private final int port1 = AvailablePortFinder.getNextAvailable();
-
+	private final ObjectWriter objectWriter = new ObjectMapper().writer();
 	/**
 	 * 
 	 */
 	@Override
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
-		return new HelloWorldRoute(port1);
+		return new CafeApiRoute(port1);
+			// HelloWorldRoute(port1);
+	}
+
+	private MenuService getMenuService() {
+		return super.context.getRegistry().lookupByNameAndType("menuService", MenuService.class);
+	}	
+
+	@Override
+	public JndiRegistry createRegistry() throws Exception {
+
+		JndiRegistry registry = super.createRegistry();
+		registry.bind("menuService", new MenuService());
+
+		return registry;
 	}
 
 	/**
@@ -35,8 +54,10 @@ public class EntryPoint extends CamelTestSupport {
 	@Ignore
 	public void testHelloGet() {
 
-		final String out = super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/say/hello")
-				.withHeader(Exchange.HTTP_METHOD, "GET").request(String.class);
+		final String out = super.fluentTemplate()
+				.to("undertow:http://localhost:" + port1 + "/say/hello")
+				.withHeader(Exchange.HTTP_METHOD, "GET")
+				.request(String.class);
 
 		assertEquals("Hello World", out);
 
@@ -56,16 +77,36 @@ public class EntryPoint extends CamelTestSupport {
 
 		update.expectedBodiesReceived(json);
 
-		super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/say/bye")
-				.withHeader(Exchange.HTTP_METHOD, "POST").withHeader(Exchange.CONTENT_TYPE, "application/json")
-				.withBody(json).send();
+		super.fluentTemplate()
+			.to("undertow:http://localhost:" + port1 + "/say/bye")
+			.withHeader(Exchange.HTTP_METHOD, "POST").withHeader(Exchange.CONTENT_TYPE, "application/json")
+			.withBody(json)
+			.send();
 
 		assertMockEndpointsSatisfied();
 	}
 
 	@Test
-	public void testGetAll() {
-		assertEquals("foo", "foo");
+	@Ignore
+	public void testGetAll() throws Exception {
+
+		final String origValue = objectWriter.writeValueAsString(this.getMenuService().getMenuItems());
+		final String out = super.fluentTemplate()
+				.to("undertow:http://localhost:" + port1 + "/cafe/menu/items")
+				.withHeader(Exchange.HTTP_METHOD, "GET")
+				.request(String.class);
+
+		assertEquals(out, origValue);
+	}
+	
+	@Test
+	public void testGetOne() throws Exception {
+		final String origValue = objectWriter.writeValueAsString(getMenuService().getMenuItem(1));
+		final String out = super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/cafe/menu/items/1")
+					.withHeader(Exchange.HTTP_METHOD, "GET")
+					.request(String.class);
+		
+		assertEquals(out, origValue);
 	}
 
 }
