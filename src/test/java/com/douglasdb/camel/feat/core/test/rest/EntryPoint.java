@@ -14,7 +14,6 @@ import com.douglasdb.camel.feat.core.rest.CafeApiRoute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-
 /**
  * 
  * @author Administrator
@@ -24,6 +23,7 @@ public class EntryPoint extends CamelTestSupport {
 
 	private final int port1 = AvailablePortFinder.getNextAvailable();
 	private final ObjectWriter objectWriter = new ObjectMapper().writer();
+
 	/**
 	 * 
 	 */
@@ -31,12 +31,12 @@ public class EntryPoint extends CamelTestSupport {
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
 		return new CafeApiRoute(port1);
-			// HelloWorldRoute(port1);
+		// HelloWorldRoute(port1);
 	}
 
 	private MenuService getMenuService() {
 		return super.context.getRegistry().lookupByNameAndType("menuService", MenuService.class);
-	}	
+	}
 
 	@Override
 	public JndiRegistry createRegistry() throws Exception {
@@ -77,11 +77,9 @@ public class EntryPoint extends CamelTestSupport {
 
 		update.expectedBodiesReceived(json);
 
-		super.fluentTemplate()
-			.to("undertow:http://localhost:" + port1 + "/say/bye")
-			.withHeader(Exchange.HTTP_METHOD, "POST").withHeader(Exchange.CONTENT_TYPE, "application/json")
-			.withBody(json)
-			.send();
+		super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/say/bye")
+				.withHeader(Exchange.HTTP_METHOD, "POST").withHeader(Exchange.CONTENT_TYPE, "application/json")
+				.withBody(json).send();
 
 		assertMockEndpointsSatisfied();
 	}
@@ -91,22 +89,52 @@ public class EntryPoint extends CamelTestSupport {
 	public void testGetAll() throws Exception {
 
 		final String origValue = objectWriter.writeValueAsString(this.getMenuService().getMenuItems());
-		final String out = super.fluentTemplate()
-				.to("undertow:http://localhost:" + port1 + "/cafe/menu/items")
-				.withHeader(Exchange.HTTP_METHOD, "GET")
-				.request(String.class);
+		final String out = super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/cafe/menu/items")
+				.withHeader(Exchange.HTTP_METHOD, "GET").request(String.class);
 
 		assertEquals(out, origValue);
 	}
-	
+
 	@Test
+	@Ignore
 	public void testGetOne() throws Exception {
+
 		final String origValue = objectWriter.writeValueAsString(getMenuService().getMenuItem(1));
-		final String out = super.fluentTemplate().to("undertow:http://localhost:" + port1 + "/cafe/menu/items/1")
+
+		final String out = super.fluentTemplate()
+				.to("undertow:http://localhost:" + port1 + "/cafe/menu/items/1")
+				.withHeader(Exchange.HTTP_METHOD, "GET").request(String.class);
+
+		// System.out.println(out);
+
+		assertEquals(out, origValue);
+	}
+
+	@Test
+	@Ignore
+	public void testGetInvalid() {
+
+		final int size = getMenuService().getMenuItems().size();
+
+		try {
+			// TODO: report camel-undertow not throwing exception on failure
+			final String out = super.fluentTemplate()
+					// throws a MenuItemNotFoundException handled by Camel
+					.to("netty4-http:http://localhost:" + port1 + "/cafe/menu/items/" + (size + 1))
 					.withHeader(Exchange.HTTP_METHOD, "GET")
 					.request(String.class);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			return;
+		}
 		
-		assertEquals(out, origValue);
+		fail("Expected call to fail with exception thrown");
+
+	}
+	
+	@Test
+	public void testCreate() {
+		
 	}
 
 }

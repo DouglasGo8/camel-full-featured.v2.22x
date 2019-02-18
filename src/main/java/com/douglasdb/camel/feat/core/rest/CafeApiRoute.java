@@ -1,8 +1,10 @@
 package com.douglasdb.camel.feat.core.rest;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
 
+import com.douglasdb.camel.feat.core.common.MenuItemNotFoundException;
 import com.douglasdb.camel.feat.core.domain.MenuItem;
 
 import lombok.Data;
@@ -25,6 +27,16 @@ public class CafeApiRoute extends RouteBuilder {
 	@Override
 	public void configure() {
 
+		
+		onException(MenuItemNotFoundException.class)
+			.handled(true)
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(404))
+			.setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+				.log("${exception.message}")
+			.setBody()
+				.simple("${exception.message}");
+		
+		
 		restConfiguration()
 			.component("undertow")
 			.port(this.port)
@@ -40,25 +52,34 @@ public class CafeApiRoute extends RouteBuilder {
 			// *****************
 			.enableCORS(true);
 			// *****************
-		rest("/cafe/menu").description("Cafe Menu Services")
-			.get("/items").description("Returns all menu items")
+		
+		rest("/cafe/menu")
+			.description("Cafe Menu Services")
+			.get("/items")
+				.description("Returns all menu items")
 					.outType(MenuItem[].class) // Flux
 					.responseMessage()
 						.code(200)
 						.message("All of the menu items")
 					.endResponseMessage()
 				.to("bean:menuService?method=getMenuItems")
-			.get("/items/{id}").description("Returns menu item with matching id")
-					.outType(MenuItem.class) // Mono
-					.responseMessage()
-						.code(200)
-						.message("The requested menu item")
+			.get("/items/{id}")
+				.description("Returns menu item with matching id")
+				.outType(MenuItem.class) //
+				.responseMessage()
+					.code(200)
+					.message("The requested menu item")
+				.endResponseMessage()
+				.responseMessage()
+					.code(404)
+					.message("Menu item not found")
 					.endResponseMessage()
-					.responseMessage()
-						.code(404)
-						.message("Menu item not found")
-					.endResponseMessage()
-				.to("bean:menuService?method=getMenuItem(${header.id})");
+				.to("bean:menuService?method=getMenuItem(${header.id})")
+			.post("/items/id")
+				.description("Returns all menu items")
+				.outType(MenuItem[].class)
+				.to("bean:menuService?method=getMenuItems");
+		
 
 	}
 
