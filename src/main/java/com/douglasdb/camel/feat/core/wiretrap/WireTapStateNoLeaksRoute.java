@@ -24,8 +24,6 @@ public class WireTapStateNoLeaksRoute extends RouteBuilder {
                 .delay(1000)
                 .to("mock:out");
 
-
-
         from("direct:processInBackground")
          	.bean(CheeseRipener.class, "ripen")
             .to("mock:tapped");
