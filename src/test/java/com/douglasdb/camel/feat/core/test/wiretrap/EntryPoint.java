@@ -64,7 +64,7 @@ public class EntryPoint extends CamelTestSupport {
 		MockEndpoint tapped = super.getMockEndpoint("mock:tapped");
 		MockEndpoint out = super.getMockEndpoint("mock:out");
 
-		tapped.expectedBodiesReceived(payload);
+		tapped.expectedBodiesReceived(payload); // exactly the same
 		out.expectedBodiesReceived(payload);
 
 		super.template.sendBody("direct:start", payload);

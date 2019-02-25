@@ -3,9 +3,7 @@ package com.douglasdb.camel.feat.core.domain;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 /**
  * 
@@ -60,7 +58,9 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return "MenuItem{" + "id=" + id + ", name='" + name + '\'' + ", cost=" + cost + ", description='" + description
+        return "MenuItem{" + "id=" + id + ", name='" +
+        		name + '\'' + ", cost=" + 
+        		cost + ", description='" + description
                 + '\'' + '}';
     }
 

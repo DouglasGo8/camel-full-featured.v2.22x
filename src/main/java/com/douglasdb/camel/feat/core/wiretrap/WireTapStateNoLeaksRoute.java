@@ -27,7 +27,7 @@ public class WireTapStateNoLeaksRoute extends RouteBuilder {
 
 
         from("direct:processInBackground")
-                .bean(CheeseRipener.class, "ripen")
-                .to("mock:tapped");
+         	.bean(CheeseRipener.class, "ripen")
+            .to("mock:tapped");
     }
 }

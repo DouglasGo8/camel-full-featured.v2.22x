@@ -18,7 +18,9 @@ public class WireTrapRoute2 extends RouteBuilder {
 		// TODO Auto-generated method stub
 		
 		from("direct:start")
+			// copy
 			.wireTap("mock:tapped")
+			//
 			.to("mock:out");
 	}
 

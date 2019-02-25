@@ -79,7 +79,7 @@ public class MenuService {
      * @return
      * @throws MenuItemInvalidException
      */
-    private int createMenuItem(MenuItem item) throws MenuItemInvalidException {
+    public int createMenuItem(MenuItem item) throws MenuItemInvalidException {
         return createMenuItem(ids.incrementAndGet(), item);
     }
 
