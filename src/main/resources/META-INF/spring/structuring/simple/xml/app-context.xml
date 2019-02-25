@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:camel="http://camel.apache.org/schema/spring"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
-
-	<bean id="mylogger"
-		class="org.apache.camel.component.log.LogComponent" />
-
-	<camel:camelContext>
-		<camel:route>
-			<camel:from uri="time:logMessageTimer?period=1s" />
-			<camel:to uri="mylogger:insideTheRoute?showHeaders=true" />
-			<camel:log message="Event triggered by ${property.CamelTimerName} at ${header.CamelTimerFiredTime}"/>
-		</camel:route>
-	</camel:camelContext>
-
-
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="org.apache.camel.component.log.LogComponent" id="mylogger"/>
+    <camel:camelContext id="camelContext-abb5899c-20f0-41c8-bbd3-2bdfa5081266">
+        <camel:route id="_route43">
+            <camel:from id="_from1" uri="time:logMessageTimer?period=1s"/>
+            <camel:to id="_to1" uri="mylogger:insideTheRoute?showHeaders=true"/>
+            <camel:log id="_log1" message="Event triggered by ${property.CamelTimerName} at ${header.CamelTimerFiredTime}"/>
+        </camel:route>
+    </camel:camelContext>
 </beans>

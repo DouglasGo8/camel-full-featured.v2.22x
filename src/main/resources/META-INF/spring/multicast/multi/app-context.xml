@@ -1,78 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:camel="http://camel.apache.org/schema/spring"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
-
-
-	<bean id="acmq"
-		class="org.apache.camel.component.jms.JmsComponent">
-		<property name="connectionFactory">
-			<bean id="cnf"
-				class="org.apache.activemq.ActiveMQConnectionFactory"
-				p:brokerURL="tcp://localhost:61616" />
-		</property>
-	</bean>
-
-
-
-	<camel:camelContext>
-
-
-		<camel:route>
-			<camel:from
-				uri="file:///Users/douglasdias/camel/input/full?noop=true" />
-			<camel:to uri="acmq:queue:incomingOrders" />
-		</camel:route>
-
-		<camel:route>
-			<camel:from uri="acmq:queue:incomingOrders" />
-			<camel:choice>
-				<camel:when>
-					<camel:simple>${header.CamelFileName} ends with '.xml'</camel:simple>
-					<camel:to uri="acmq:queue:xmlOrders" />
-				</camel:when>
-				<camel:when>
-					<camel:simple>${header.CamelFileName} regex '^.*(csv|csl)$'</camel:simple>
-					<camel:to uri="acmq:queue:csvOrders" />
-				</camel:when>
-				<camel:otherwise>
-					<camel:to uri="acmq:queue:badOrders" />
-				</camel:otherwise>
-			</camel:choice>
-		</camel:route>
-
-		<camel:route>
-			<camel:from uri="acmq:queue:xmlOrders" />
-			<camel:multicast>
-				<camel:to uri="acmq:queue:accounting" />
-				<camel:to uri="acmq:queue:production" />
-			</camel:multicast>
-		</camel:route>
-
-		<camel:route>
-			<camel:from uri="acmq:queue:accounting" />
-			<camel:log
-				message="Accounting received order: ${header.CamelFileName}" />
-			<camel:to uri="mock:accounting" />
-
-		</camel:route>
-
-		<camel:route>
-			<camel:from uri="acmq:queue:production" />
-			<camel:log
-				message="Accounting received order: ${header.CamelFileName}" />
-			<camel:to uri="mock:production" />
-		</camel:route>
-
-	</camel:camelContext>
-
-
-
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="org.apache.camel.component.jms.JmsComponent" id="acmq">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory"
+                id="cnf" p:brokerURL="tcp://localhost:61616"/>
+        </property>
+    </bean>
+    <camel:camelContext id="camelContext-f9587a22-a554-4905-be73-6bf68b7c9cfa">
+        <camel:route id="_route4">
+            <camel:from id="_from1" uri="file:///Users/douglasdias/camel/input/full?noop=true"/>
+            <camel:to id="_to1" uri="acmq:queue:incomingOrders"/>
+        </camel:route>
+        <camel:route id="_route5">
+            <camel:from id="_from2" uri="acmq:queue:incomingOrders"/>
+            <camel:choice id="_choice1">
+                <camel:when id="_when1">
+                    <camel:simple>${header.CamelFileName} ends with '.xml'</camel:simple>
+                    <camel:to id="_to2" uri="acmq:queue:xmlOrders"/>
+                </camel:when>
+                <camel:when id="_when2">
+                    <camel:simple>${header.CamelFileName} regex '^.*(csv|csl)$'</camel:simple>
+                    <camel:to id="_to3" uri="acmq:queue:csvOrders"/>
+                </camel:when>
+                <camel:otherwise id="_otherwise1">
+                    <camel:to id="_to4" uri="acmq:queue:badOrders"/>
+                </camel:otherwise>
+            </camel:choice>
+        </camel:route>
+        <camel:route id="_route6">
+            <camel:from id="_from3" uri="acmq:queue:xmlOrders"/>
+            <camel:multicast id="_multicast1">
+                <camel:to id="_to5" uri="acmq:queue:accounting"/>
+                <camel:to id="_to6" uri="acmq:queue:production"/>
+            </camel:multicast>
+        </camel:route>
+        <camel:route id="_route7">
+            <camel:from id="_from4" uri="acmq:queue:accounting"/>
+            <camel:log id="_log1" message="Accounting received order: ${header.CamelFileName}"/>
+            <camel:to id="_to7" uri="mock:accounting"/>
+        </camel:route>
+        <camel:route id="_route8">
+            <camel:from id="_from5" uri="acmq:queue:production"/>
+            <camel:log id="_log2" message="Accounting received order: ${header.CamelFileName}"/>
+            <camel:to id="_to8" uri="mock:production"/>
+        </camel:route>
+    </camel:camelContext>
 </beans>

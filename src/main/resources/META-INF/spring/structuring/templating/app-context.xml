@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:camel="http://camel.apache.org/schema/spring"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
-	<bean id="dateFirstOrderFileNameProcessor"
-		class="com.full.camel.core.structuring.route.processor.OrderFileNameProcessor"
-		p:countryDateFormat="dd-MM-yyyy" />
-
-	<bean id="monthFirstOrderFileNameProcessor"
-		class="com.full.camel.core.structuring.route.processor.OrderFileNameProcessor"
-		p:countryDateFormat="MM-dd-yyyy" />
-
-	<bean id="ukOrdersRouteBuilder"
-		class="com.full.camel.core.structuring.route.OrderProcessingRoute"
-		p:id="ukOrders"
-		p:inputDirectory="/Users/douglasdias/.camel/input"
-		p:outputDirectory="/Users/douglasdias/.camel/output"
-		p:orderFileNameProcessor-ref="dateFirstOrderFileNameProcessor" />
-
-	<camel:camelContext>
-		<camel:routeBuilder ref="ukOrdersRouteBuilder"/>
-	</camel:camelContext>
-
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean
+        class="com.full.camel.core.structuring.route.processor.OrderFileNameProcessor"
+        id="dateFirstOrderFileNameProcessor" p:countryDateFormat="dd-MM-yyyy"/>
+    <bean
+        class="com.full.camel.core.structuring.route.processor.OrderFileNameProcessor"
+        id="monthFirstOrderFileNameProcessor" p:countryDateFormat="MM-dd-yyyy"/>
+    <bean
+        class="com.full.camel.core.structuring.route.OrderProcessingRoute"
+        id="ukOrdersRouteBuilder" p:id="ukOrders"
+        p:inputDirectory="/Users/douglasdias/.camel/input"
+        p:orderFileNameProcessor-ref="dateFirstOrderFileNameProcessor" p:outputDirectory="/Users/douglasdias/.camel/output"/>
+    <camel:camelContext id="camelContext-d37d139a-4244-44fe-b662-88b4e788256c">
+        <camel:routeBuilder ref="ukOrdersRouteBuilder"/>
+    </camel:camelContext>
 </beans>
