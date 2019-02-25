@@ -23,8 +23,13 @@ public class WireTapStateNoLeaksRoute extends RouteBuilder {
                     if (cheese != null)
                         in.setBody(cheese.clone());
                 })
+<<<<<<< HEAD
             .delay(1000) // forces delay
             .to("mock:out");
+=======
+                .delay(1000)
+                .to("mock:out");
+>>>>>>> gc001
 
         from("direct:processInBackground")
 <<<<<<< HEAD
