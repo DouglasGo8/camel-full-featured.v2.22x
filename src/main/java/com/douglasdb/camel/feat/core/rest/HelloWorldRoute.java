@@ -2,7 +2,6 @@ package com.douglasdb.camel.feat.core.rest;
 
 import org.apache.camel.builder.RouteBuilder;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
