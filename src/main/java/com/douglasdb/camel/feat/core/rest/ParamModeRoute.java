@@ -1,6 +1,7 @@
 package com.douglasdb.camel.feat.core.rest;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestParamType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +33,36 @@ public class ParamModeRoute extends RouteBuilder {
 				.route()
 				.transform()
 					.simple("Hello World")
-			.endRest();
+			.endRest()
+			.get("/hello/{name}")
+				.route()
+				.transform()
+					.simple("Hello ${header.name}")
+			.endRest()
+			.get("/hello/query/{name}?verbose={verbose}")
+				.param()
+					.name("verbose")
+					.type(RestParamType.query)
+						// ===================
+						.defaultValue("false")
+						// ===================
+				.endParam()
+				.to("direct:hello")
+			.post("/bye/{name}")
+				.toD("mock:${header.name}");
+
+		// ===========================================================
+		from("direct:hello")
+			.log("${body}")
+			.choice()
+				.when(header("verbose").isEqualTo(true))
+					.transform()
+						.simple("Hello there ${header.name}! How are u today?")
+			.endChoice()
+			.otherwise()
+				.transform()
+					.simple("Yo ${header.name}");
+
 			
 	}
 
