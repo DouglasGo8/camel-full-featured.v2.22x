@@ -15,5 +15,6 @@
     <bean class="com.douglasdb.camel.feat.core.extend.ConsumeMdb" id="bean-20bea77d-7300-44e0-8e5c-f9cf0dc5b91f"/>
     <bean class="org.apache.activemq.camel.component.ActiveMQComponent"
         id="activemq" p:brokerURL="vm://myBroker?create=false"/>
-    <camel:camelContext depends-on="broker" id="camelContext-7f12394f-c68d-49fb-b2a8-d8b86757691c"/>
+    <camel:camelContext depends-on="broker" 
+    	id="camelContext-7f12394f-c68d-49fb-b2a8-d8b86757691c"/>
 </beans>
