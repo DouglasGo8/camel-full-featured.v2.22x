@@ -126,7 +126,10 @@ public class EntryPoint extends CamelTestSupport {
 
         final String message = "Test Message";
 
-        String out = super.fluentTemplate().withBody(message).to("direct:receiveOrders").request(String.class);
+        String out = super.fluentTemplate()
+            .withBody(message)
+            .to("direct:receiveOrders")
+            .request(String.class);
 
         assertEquals("Processed..." + message, out);
 
