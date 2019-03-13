@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <camel:camelContext id="camelContext-faac4f01-e4e2-48aa-85ed-3e2904bf4b6c">
-        <camel:dataFormats>
-            <camel:jaxb
-                contextPath="com.douglasdb.camel.feat.core.domain.jaxb" id="jaxb"/>
-        </camel:dataFormats>
-        <camel:route id="_route64">
-            <!-- convert to xml -->
-            <camel:from id="_from1" uri="direct:order"/>
-            <camel:marshal id="_marshal1" ref="jaxb" />
-            <camel:to id="_to1" uri="seda:queue:order"/>
-        </camel:route>
-        <camel:route id="_route65">
-            <camel:from id="_from2" uri="seda:queue:order"/>
-            <camel:log id="_log1" message="${body}"/>
-            <camel:unmarshal id="_unmarshal1" ref="jaxb"/>
-            <camel:to id="_to2" uri="mock:order"/>
-        </camel:route>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<camel:camelContext
+		id="camelContext-faac4f01-e4e2-48aa-85ed-3e2904bf4b6c">
+		<camel:dataFormats>
+			<camel:jaxb
+				contextPath="com.douglasdb.camel.feat.core.domain.jaxb" id="jaxb" />
+		</camel:dataFormats>
+		<camel:route id="_route64">
+			<!-- convert to xml -->
+			<camel:from id="_from1" uri="direct:order" />
+			<camel:marshal id="_marshal1" ref="jaxb" />
+			<camel:to id="_to1" uri="seda:queue:order" />
+		</camel:route>
+		<camel:route id="_route65">
+			<camel:from id="_from2" uri="seda:queue:order" />
+			<camel:log id="_log1" message="${body}" />
+			<camel:unmarshal id="_unmarshal1" ref="jaxb" />
+			<camel:to id="_to2" uri="mock:order" />
+		</camel:route>
+	</camel:camelContext>
 </beans>

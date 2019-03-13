@@ -59,7 +59,7 @@ public class EntryPointSpring extends CamelSpringTestSupport {
 		
 		//System.out.println(xml.getElementsByTagName("order").item(0).getLocalName());
 		
-		template.sendBodyAndHeader("file://src/main/resources/META-INF/order", 
+		template.sendBodyAndHeader("file://src/main/resources/META-INF/order/", 
 				xml, Exchange.FILE_NAME, "order.xml");
 		
 		

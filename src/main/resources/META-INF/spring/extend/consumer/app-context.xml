@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd    http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
-    <broker brokerName="myBroker" id="broker" persistent="false"
-        useJmx="true" xmlns="http://activemq.apache.org/schema/core">
-        <transportConnectors>
-            <transportConnector uri="vm://myBroker"/>
-        </transportConnectors>
-    </broker>
-    <bean class="com.douglasdb.camel.feat.core.extend.ConsumeMdb" id="bean-a00a0f87-386a-4b28-bc7b-bba32ddb4738"/>
-    <bean class="org.apache.activemq.camel.component.ActiveMQComponent"
-        id="activemq" p:brokerURL="vm://myBroker?create=false"/>
-    <camel:camelContext depends-on="broker" id="camelContext-0c05a5c2-052e-4ddc-8004-b2c4c7dde95b"/>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd   
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd   
+						http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd    
+						http://activemq.apache.org/schema/core 
+						http://activemq.apache.org/schema/core/activemq-core.xsd">
+	<broker brokerName="myBroker" id="broker" persistent="false"
+		useJmx="true" xmlns="http://activemq.apache.org/schema/core">
+		<transportConnectors>
+			<transportConnector uri="vm://myBroker" />
+		</transportConnectors>
+	</broker>
+	<bean class="com.douglasdb.camel.feat.core.extend.ConsumeMdb" />
+	<bean
+		class="org.apache.activemq.camel.component.ActiveMQComponent"
+		id="activemq" p:brokerURL="vm://myBroker?create=false" />
+	<camel:camelContext depends-on="broker" />
 </beans>
