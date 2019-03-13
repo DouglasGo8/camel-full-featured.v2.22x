@@ -2,11 +2,13 @@ package com.douglasdb.camel.feat.core.converter;
 
 import java.math.BigDecimal;
 
+import com.douglasdb.camel.feat.core.domain.purchase.PurchaseOrderDefault;
+
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConverter;
 
-import com.douglasdb.camel.feat.core.domain.PurchaseOrderDefault;
+
 
 /**
  * 

@@ -1,57 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean class="org.apache.camel.component.jms.JmsComponent" id="acmq">
-        <property name="connectionFactory">
-            <bean class="org.apache.activemq.ActiveMQConnectionFactory"
-                id="cnf" p:brokerURL="tcp://localhost:61616"/>
-        </property>
-    </bean>
-    <bean
-        class="com.full.camel.core.recipientlist.OrderWithRecipientListBean" id="recipientsBean"/>
-    <camel:camelContext id="camelContext-8899744b-e697-4240-b1df-f12f4a22ed76">
-        <camel:route id="_route28">
-            <camel:from id="_from1" uri="file:///Users/douglasdias/camel/input/full?noop=true"/>
-            <camel:to id="_to1" uri="acmq:queue:incomingOrders"/>
-        </camel:route>
-        <camel:route id="_route29">
-            <camel:from id="_from2" uri="acmq:queue:incomingOrders"/>
-            <camel:choice id="_choice1">
-                <camel:when id="_when1">
-                    <camel:simple>${header.CamelFileName} ends with '.xml'</camel:simple>
-                    <camel:to id="_to2" uri="acmq:queue:xmlOrders"/>
-                </camel:when>
-                <camel:when id="_when2">
-                    <camel:simple>${header.CamelFileName} regex '^.*(csv|csl)$'</camel:simple>
-                    <camel:to id="_to3" uri="acmq:queue:csvOrders"/>
-                </camel:when>
-                <camel:otherwise id="_otherwise1">
-                    <camel:to id="_to4" uri="acmq:queue:badOrders"/>
-                </camel:otherwise>
-            </camel:choice>
-        </camel:route>
-        <camel:route id="_route30">
-            <camel:from id="_from3" uri="acmq:queue:xmlOrders"/>
-            <camel:setHeader headerName="recipients" id="_setHeader1">
-                <camel:method method="recipients" ref="recipientsBean"/>
-            </camel:setHeader>
-            <camel:recipientList id="_recipientList1">
-                <camel:header>recipients</camel:header>
-            </camel:recipientList>
-        </camel:route>
-        <camel:route id="_route31">
-            <camel:from id="_from4" uri="acmq:queue:accounting"/>
-            <camel:log id="_log1" message="Accounting received order: ${header.CamelFileName}"/>
-            <camel:to id="_to5" uri="mock:accounting"/>
-        </camel:route>
-        <camel:route id="_route32">
-            <camel:from id="_from5" uri="acmq:queue:production"/>
-            <camel:log id="_log2" message="Accounting received order: ${header.CamelFileName}"/>
-            <camel:to id="_to6" uri="mock:production"/>
-        </camel:route>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean class="org.apache.camel.component.jms.JmsComponent"
+		id="acmq">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory"
+				id="cnf" p:brokerURL="tcp://localhost:61616" />
+		</property>
+	</bean>
+	<bean
+		class="com.full.camel.core.recipientlist.OrderWithRecipientListBean"
+		id="recipientsBean" />
+	<camel:camelContext
+		id="camelContext-8899744b-e697-4240-b1df-f12f4a22ed76">
+		<camel:route id="_route28">
+			<camel:from id="_from1"
+				uri="file:///Users/douglasdias/camel/input/full?noop=true" />
+			<camel:to id="_to1" uri="acmq:queue:incomingOrders" />
+		</camel:route>
+		<camel:route id="_route29">
+			<camel:from id="_from2" uri="acmq:queue:incomingOrders" />
+			<camel:choice id="_choice1">
+				<camel:when id="_when1">
+					<camel:simple>${header.CamelFileName} ends with '.xml'</camel:simple>
+					<camel:to id="_to2" uri="acmq:queue:xmlOrders" />
+				</camel:when>
+				<camel:when id="_when2">
+					<camel:simple>${header.CamelFileName} regex '^.*(csv|csl)$'</camel:simple>
+					<camel:to id="_to3" uri="acmq:queue:csvOrders" />
+				</camel:when>
+				<camel:otherwise id="_otherwise1">
+					<camel:to id="_to4" uri="acmq:queue:badOrders" />
+				</camel:otherwise>
+			</camel:choice>
+		</camel:route>
+		<camel:route id="_route30">
+			<camel:from id="_from3" uri="acmq:queue:xmlOrders" />
+			<camel:setHeader headerName="recipients"
+				id="_setHeader1">
+				<camel:method method="recipients" ref="recipientsBean" />
+			</camel:setHeader>
+			<camel:recipientList id="_recipientList1">
+				<camel:header>recipients</camel:header>
+			</camel:recipientList>
+		</camel:route>
+		<camel:route id="_route31">
+			<camel:from id="_from4" uri="acmq:queue:accounting" />
+			<camel:log id="_log1"
+				message="Accounting received order: ${header.CamelFileName}" />
+			<camel:to id="_to5" uri="mock:accounting" />
+		</camel:route>
+		<camel:route id="_route32">
+			<camel:from id="_from5" uri="acmq:queue:production" />
+			<camel:log id="_log2"
+				message="Accounting received order: ${header.CamelFileName}" />
+			<camel:to id="_to6" uri="mock:production" />
+		</camel:route>
+	</camel:camelContext>
 </beans>

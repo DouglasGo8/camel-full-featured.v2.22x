@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.domain;
+package com.douglasdb.camel.feat.core.domain.menu;
 
 import javax.validation.constraints.NotNull;
 

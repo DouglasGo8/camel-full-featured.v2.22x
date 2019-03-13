@@ -7,7 +7,7 @@ import org.apache.camel.model.rest.RestParamType;
 
 import com.douglasdb.camel.feat.core.common.MenuItemInvalidException;
 import com.douglasdb.camel.feat.core.common.MenuItemNotFoundException;
-import com.douglasdb.camel.feat.core.domain.MenuItem;
+import com.douglasdb.camel.feat.core.domain.menu.MenuItem;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import lombok.Data;

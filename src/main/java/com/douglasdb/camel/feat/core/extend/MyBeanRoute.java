@@ -1,8 +1,9 @@
 package com.douglasdb.camel.feat.core.extend;
 
+import com.douglasdb.camel.feat.core.domain.bean.MyBean;
+
 import org.apache.camel.builder.RouteBuilder;
 
-import com.douglasdb.camel.feat.core.domain.MyBean;
 
 
 /**

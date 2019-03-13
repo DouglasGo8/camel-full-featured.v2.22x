@@ -1,4 +1,6 @@
-package com.douglasdb.camel.feat.core.bean;
+package com.douglasdb.camel.feat.core.bean.bean;
+
+import com.douglasdb.camel.feat.core.domain.bean.HelloBean;
 
 import org.apache.camel.builder.RouteBuilder;
 

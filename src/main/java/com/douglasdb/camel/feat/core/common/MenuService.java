@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.douglasdb.camel.feat.core.domain.MenuItem;
+import com.douglasdb.camel.feat.core.domain.menu.MenuItem;
 
 import lombok.Data;
 

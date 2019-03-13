@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:camel="http://camel.apache.org/schema/spring"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
-
-	<bean id="dynamicRouterBean"
-		class="com.full.camel.core.routing.MyDynamicRouter" />
-
-	<camel:camelContext>
-
-		<camel:route>
-			<camel:from uri="direct:start" />
-			<camel:dynamicRouter>
-				<camel:method ref="dynamicRouterBean" method="routeMe" />
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean class="com.full.camel.core.routing.MyDynamicRouter"
+		id="dynamicRouterBean" />
+	<camel:camelContext
+		id="camelContext-ba9489d1-5c0e-4db0-b2a4-d32190f68101">
+		<camel:route id="_route71">
+			<camel:from id="_from1" uri="direct:start" />
+			<camel:dynamicRouter id="_dynamicRouter1">
+				<camel:method method="routeMe" ref="dynamicRouterBean" />
 			</camel:dynamicRouter>
 		</camel:route>
-
-		<camel:route>
-			<camel:from uri="direct:other" />
-			<camel:to uri="mock:other" />
+		<camel:route id="_route72">
+			<camel:from id="_from2" uri="direct:other" />
+			<camel:to id="_to1" uri="mock:other" />
 		</camel:route>
-
 	</camel:camelContext>
-
-
-
 </beans>

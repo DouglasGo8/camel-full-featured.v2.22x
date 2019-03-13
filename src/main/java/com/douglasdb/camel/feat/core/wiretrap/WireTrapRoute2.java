@@ -20,7 +20,6 @@ public class WireTrapRoute2 extends RouteBuilder {
 		from("direct:start")
 			// copy
 			.wireTap("mock:tapped")
-			//
 			.to("mock:out");
 	}
 

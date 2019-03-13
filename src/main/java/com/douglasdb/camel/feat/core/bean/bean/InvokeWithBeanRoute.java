@@ -1,7 +1,7 @@
-package com.douglasdb.camel.feat.core.bean;
+package com.douglasdb.camel.feat.core.bean.bean;
 
 import org.apache.camel.builder.RouteBuilder;
-
+import com.douglasdb.camel.feat.core.domain.bean.HelloBean;
 /**
  * 
  * @author Administrador

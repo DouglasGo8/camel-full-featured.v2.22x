@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.bean;
+package com.douglasdb.camel.feat.core.bean.bean;
 
 import java.util.Random;
 

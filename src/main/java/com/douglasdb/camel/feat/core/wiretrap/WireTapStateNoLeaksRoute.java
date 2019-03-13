@@ -1,11 +1,14 @@
 package com.douglasdb.camel.feat.core.wiretrap;
 
+import com.douglasdb.camel.feat.core.domain.cheese.Cheese;
+
 import org.apache.camel.Message;
 import org.apache.camel.builder.RouteBuilder;
 
-import com.douglasdb.camel.feat.core.domain.Cheese;;
+
 /**
  * @author Douglas D.b
+ * 
  */
 public class WireTapStateNoLeaksRoute extends RouteBuilder {
 
@@ -28,11 +31,8 @@ public class WireTapStateNoLeaksRoute extends RouteBuilder {
                 
 
         from("direct:processInBackground")
-
          	.bean(CheeseRipener.class, "ripen")
-
-            .bean(CheeseRipener.class, "ripen")
-
+            //.bean(CheeseRipener.class, "ripen")
             .to("mock:tapped");
     }
 }

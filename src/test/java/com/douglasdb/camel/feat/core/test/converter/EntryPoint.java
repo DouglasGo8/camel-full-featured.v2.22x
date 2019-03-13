@@ -12,9 +12,10 @@ import org.junit.Test;
 
 import com.douglasdb.camel.feat.core.converter.PurchaseOrderBindyRoute;
 import com.douglasdb.camel.feat.core.converter.PurchaseOrderServiceBean;
-import com.douglasdb.camel.feat.core.domain.PurchaseOrderCsv;
-import com.douglasdb.camel.feat.core.domain.PurchaseOrderDefault;
+
 import com.douglasdb.camel.feat.core.domain.jaxb.PurchaseOrderJaxb;
+import com.douglasdb.camel.feat.core.domain.purchase.PurchaseOrderCsv;
+import com.douglasdb.camel.feat.core.domain.purchase.PurchaseOrderDefault;
 
 /**
  * 

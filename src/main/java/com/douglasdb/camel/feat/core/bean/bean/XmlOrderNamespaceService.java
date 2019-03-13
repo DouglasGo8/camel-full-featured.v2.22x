@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.bean;
+package com.douglasdb.camel.feat.core.bean.bean;
 
 import org.apache.camel.Body;
 import org.apache.camel.language.Bean;

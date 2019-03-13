@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.douglasdb.camel.feat.core.common.ItemService;
-import com.douglasdb.camel.feat.core.domain.Item;
+import com.douglasdb.camel.feat.core.domain.menu.Item;
 import com.douglasdb.camel.feat.core.rest.BindingModeRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

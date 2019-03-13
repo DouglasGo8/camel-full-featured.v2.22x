@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import com.douglasdb.camel.feat.core.common.MenuItemNotFoundException;
 import com.douglasdb.camel.feat.core.common.MenuService;
-import com.douglasdb.camel.feat.core.domain.MenuItem;
+import com.douglasdb.camel.feat.core.domain.menu.MenuItem;
 import com.douglasdb.camel.feat.core.rest.CafeApiRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

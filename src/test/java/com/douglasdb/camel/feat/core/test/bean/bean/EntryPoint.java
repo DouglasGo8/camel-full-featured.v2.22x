@@ -1,11 +1,11 @@
-package com.douglasdb.camel.feat.core.test.bean;
+package com.douglasdb.camel.feat.core.test.bean.bean;
 
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.bean.InvokeWithProcessorRoute;
+import com.douglasdb.camel.feat.core.bean.bean.InvokeWithProcessorRoute;
 
 /**
  * 

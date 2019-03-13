@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.wiretrap;
 
-import com.douglasdb.camel.feat.core.domain.Cheese;
+import com.douglasdb.camel.feat.core.domain.cheese.Cheese;
 import com.douglasdb.camel.feat.core.wiretrap.WireTapStateNoLeaksRoute;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.CamelContext;

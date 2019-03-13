@@ -1,9 +1,11 @@
 package com.douglasdb.camel.feat.core.converter;
 
+import com.douglasdb.camel.feat.core.domain.purchase.PurchaseOrderCsv;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.BindyType;
 
-import com.douglasdb.camel.feat.core.domain.PurchaseOrderCsv;
+
 
 
 

@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.domain;
+package com.douglasdb.camel.feat.core.domain.purchase;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

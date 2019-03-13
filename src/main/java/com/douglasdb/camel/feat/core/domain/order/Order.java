@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.domain;
+package com.douglasdb.camel.feat.core.domain.order;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

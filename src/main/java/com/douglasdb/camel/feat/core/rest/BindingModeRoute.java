@@ -1,9 +1,9 @@
 package com.douglasdb.camel.feat.core.rest;
 
+import com.douglasdb.camel.feat.core.domain.menu.Item;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
-
-import com.douglasdb.camel.feat.core.domain.Item;
 
 
 /**

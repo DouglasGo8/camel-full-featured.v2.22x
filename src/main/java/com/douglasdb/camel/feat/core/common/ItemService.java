@@ -2,7 +2,8 @@ package com.douglasdb.camel.feat.core.common;
 
 import java.util.ArrayList;
 
-import com.douglasdb.camel.feat.core.domain.Item;
+import com.douglasdb.camel.feat.core.domain.menu.Item;
+
 
 /**
  * 

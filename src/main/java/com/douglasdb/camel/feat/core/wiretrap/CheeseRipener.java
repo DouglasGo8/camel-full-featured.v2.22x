@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.wiretrap;
 
-import com.douglasdb.camel.feat.core.domain.Cheese;
+import com.douglasdb.camel.feat.core.domain.cheese.Cheese;
 
 /**
  *

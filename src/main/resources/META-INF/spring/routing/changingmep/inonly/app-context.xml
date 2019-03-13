@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <camel:camelContext id="camelContext-b6d47b86-c575-4dc5-8009-47005f45ba67">
-        <camel:route id="_route49">
-            <camel:from id="_from1" uri="direct:start"/>
-            <camel:to id="_to1" uri="mock:beforeOneWay"/>
-            <camel:inOnly id="_inOnly1" uri="direct:oneWay"/>
-            <camel:to id="_to2" uri="mock:afterOneWay"/>
-            <camel:transform id="_transform1">
-                <camel:constant>Done</camel:constant>
-            </camel:transform>
-        </camel:route>
-        <camel:route id="_route50">
-            <camel:from id="_from2" uri="direct:oneWay"/>
-            <camel:to id="_to3" uri="mock:oneWay"/>
-        </camel:route>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<camel:camelContext
+		id="camelContext-b6d47b86-c575-4dc5-8009-47005f45ba67">
+		<camel:route id="_route49">
+			<camel:from id="_from1" uri="direct:start" />
+			<camel:to id="_to1" uri="mock:beforeOneWay" />
+			<camel:inOnly id="_inOnly1" uri="direct:oneWay" />
+			<camel:to id="_to2" uri="mock:afterOneWay" />
+			<camel:transform id="_transform1">
+				<camel:constant>Done</camel:constant>
+			</camel:transform>
+		</camel:route>
+		<camel:route id="_route50">
+			<camel:from id="_from2" uri="direct:oneWay" />
+			<camel:to id="_to3" uri="mock:oneWay" />
+		</camel:route>
+	</camel:camelContext>
 </beans>
