@@ -21,7 +21,9 @@ public class MyAggregationStrategy implements AggregationStrategy {
 
         final String oldBody = oldExchange.getIn().getBody(String.class).trim();
         final String newBody = newExchange.getIn().getBody(String.class).trim();
-
+        
+        //System.out.println("** (oBody)" + oldBody);
+        
         final String sumUpBody = oldBody + newBody;
 
         oldExchange.getIn().setBody(sumUpBody);

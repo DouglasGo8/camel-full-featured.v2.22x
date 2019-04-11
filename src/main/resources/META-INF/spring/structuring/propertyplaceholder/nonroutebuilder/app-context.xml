@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <camel:camelContext id="camelContext-9228a1ce-9516-4a9d-bb06-e212f0656224">
-        <camel:propertyPlaceholder id="properties" location="classpath:placeholder.properties"/>
-        <camel:route id="_route36">
-            <camel:from id="_from1" uri="{{start.endpoint}}"/>
-            <camel:transform id="_transform1">
-                <camel:simple>{{transform.message}}: ${body}</camel:simple>
-            </camel:transform>
-            <camel:log id="_log1" message="Set message to ${body}"/>
-            <camel:to id="_to1" uri="{{end.endpoint}}"/>
-        </camel:route>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<camel:camelContext
+		id="camelContext-9228a1ce-9516-4a9d-bb06-e212f0656224">
+		<camel:propertyPlaceholder id="properties"
+			location="classpath:placeholder.properties" />
+		<camel:route id="_route36">
+			<camel:from id="_from1" uri="{{start.endpoint}}" />
+			<camel:transform id="_transform1">
+				<camel:simple>{{transform.message}}: ${body}</camel:simple>
+			</camel:transform>
+			<camel:log id="_log1" message="Set message to ${body}" />
+			<camel:to id="_to1" uri="{{end.endpoint}}" />
+		</camel:route>
+	</camel:camelContext>
 </beans>

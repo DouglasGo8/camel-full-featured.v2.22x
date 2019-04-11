@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:camel="http://camel.apache.org/schema/spring"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-	<bean class="com.douglasdb.camel.feat.core.domain.MyBean"
-		id="myBean" />
-	<camel:camelContext
-		id="camelContext-92089433-0852-491b-be07-21f2f7808425">
-		<camel:route id="_route1">
-			<camel:from id="_from1" uri="direct:normal" />
-			<camel:bean id="_bean1" method="sayHello(${body}, false)"
-				ref="myBean" />
-		</camel:route>
-		<camel:route id="_route2">
-			<camel:from id="_from2" uri="direct:hipster" />
-			<camel:bean id="_bean2" method="sayHello(${body}, true)"
-				ref="myBean" />
-		</camel:route>
-		<camel:route id="_route3">
-			<camel:from id="_from3" uri="direct:undecided" />
-			<camel:bean id="_bean3"
-				method="sayHello(${body}, ${header.hipster})" ref="myBean" />
-		</camel:route>
-	</camel:camelContext>
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="com.douglasdb.camel.feat.core.domain.MyBean" id="myBean"/>
+    <camel:camelContext id="camelContext-92089433-0852-491b-be07-21f2f7808425">
+        <camel:route id="_route1">
+            <camel:from id="_from1" uri="direct:normal"/>
+            <camel:bean id="_bean1" method="sayHello(${body}, false)" ref="myBean"/>
+        </camel:route>
+        <camel:route id="_route2">
+            <camel:from id="_from2" uri="direct:hipster"/>
+            <camel:bean id="_bean2" method="sayHello(${body}, true)" ref="myBean"/>
+        </camel:route>
+        <camel:route id="_route3">
+            <camel:from id="_from3" uri="direct:undecided"/>
+            <camel:bean id="_bean3"
+                method="sayHello(${body}, ${header.hipster})" ref="myBean"/>
+        </camel:route>
+    </camel:camelContext>
 </beans>

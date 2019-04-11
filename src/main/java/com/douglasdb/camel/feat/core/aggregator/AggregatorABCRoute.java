@@ -7,7 +7,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * @author Douglas Db
  */
-public class AggregatorABC extends RouteBuilder {
+public class AggregatorABCRoute extends RouteBuilder {
 
     
     @Override

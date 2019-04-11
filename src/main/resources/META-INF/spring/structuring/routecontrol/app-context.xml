@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean
-        class="com.full.camel.core.structuring.route.processor.OrderProcessor" id="orderProcessor"/>
-    <camel:camelContext id="camelContext-14f5c554-4eca-490a-9599-a09954486339">
-        <camel:route id="_route37" startupOrder="20">
-            <camel:from id="_from1" uri="direct:receiveOrders"/>
-            <camel:to id="_to1" uri="seda:processOrders"/>
-        </camel:route>
-        <camel:route id="_route38" startupOrder="10">
-            <camel:from id="_from2" uri="seda:processOrders"/>
-            <camel:process id="_process1" ref="orderProcessor"/>
-        </camel:route>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean
+		class="com.full.camel.core.structuring.route.processor.OrderProcessor"
+		id="orderProcessor" />
+	<camel:camelContext
+		id="camelContext-14f5c554-4eca-490a-9599-a09954486339">
+		<camel:route id="_route37" startupOrder="20">
+			<camel:from id="_from1" uri="direct:receiveOrders" />
+			<camel:to id="_to1" uri="seda:processOrders" />
+		</camel:route>
+		<camel:route id="_route38" startupOrder="10">
+			<camel:from id="_from2" uri="seda:processOrders" />
+			<camel:process id="_process1" ref="orderProcessor" />
+		</camel:route>
+	</camel:camelContext>
 </beans>

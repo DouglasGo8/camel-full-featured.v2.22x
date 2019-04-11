@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean
-        class="com.full.camel.core.structuring.route.PropertyConsumingRoute" id="propertyConsumingRouteBuilder"/>
-    <camel:camelContext id="camelContext-bdcaa020-5aca-49e7-b0d9-442e1192cbe2">
-        <camel:propertyPlaceholder id="properties" location="classpath:placeholder.properties"/>
-        <camel:routeBuilder ref="propertyConsumingRouteBuilder"/>
-    </camel:camelContext>
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean
+		class="com.full.camel.core.structuring.route.PropertyConsumingRoute"
+		id="propertyConsumingRouteBuilder" />
+	<camel:camelContext
+		id="camelContext-bdcaa020-5aca-49e7-b0d9-442e1192cbe2">
+		<camel:propertyPlaceholder id="properties"
+			location="classpath:placeholder.properties" />
+		<camel:routeBuilder
+			ref="propertyConsumingRouteBuilder" />
+	</camel:camelContext>
 </beans>
