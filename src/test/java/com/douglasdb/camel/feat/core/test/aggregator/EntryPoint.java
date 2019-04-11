@@ -15,11 +15,8 @@ import java.util.concurrent.TimeUnit;
 import com.douglasdb.camel.feat.core.aggregator.AggregateABCRecoveryRoute;
 
 
-
-
-
 /**
- * @author Douglas Db
+ * @author DouglasDb
  */
 public class EntryPoint extends CamelTestSupport {
 
