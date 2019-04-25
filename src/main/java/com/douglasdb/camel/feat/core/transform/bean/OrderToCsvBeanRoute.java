@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.transform;
+package com.douglasdb.camel.feat.core.transform.bean;
 
 import org.apache.camel.builder.RouteBuilder;
 
