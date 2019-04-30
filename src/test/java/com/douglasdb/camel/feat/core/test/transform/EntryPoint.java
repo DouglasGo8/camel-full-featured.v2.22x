@@ -1,6 +1,7 @@
 package com.douglasdb.camel.feat.core.test.transform;
 
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,8 +11,7 @@ import java.util.Locale;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
 import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
-import com.douglasdb.camel.feat.core.transform.csv.CsvRoute;
-import com.douglasdb.camel.feat.core.transform.enrich.EnrichRoute;
+import com.douglasdb.camel.feat.core.transform.enrich.EnrichXsltRoute;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -32,7 +32,8 @@ public class EntryPoint extends CamelTestSupport {
 	@Override
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
-		return new EnrichRoute();
+		return new EnrichXsltRoute();
+				// EnrichRoute();
 				// CsvRoute();
 				// OrderToCsvBeanRoute();
 	}
@@ -103,6 +104,7 @@ public class EntryPoint extends CamelTestSupport {
 
 
 	@Test
+	@Ignore
 	public void testEnrich() {
 
 		String response = template.requestBody("direct:start", "MA", String.class);
@@ -115,7 +117,23 @@ public class EntryPoint extends CamelTestSupport {
 
 	}
 
+	@Test
+	public void testEnrichXslt() throws Exception {
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
 
+		String response = template.requestBody("direct:start", request, String.class);
+
+		log.info("Response = {}", response);
+		assertEquals("<books><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
+	}
+
+
+	/**
+	 *
+	 * @return
+	 * @throws Exception
+	 */
 	private ArrayList<BookModel> getBookModel() throws Exception {
 		final ArrayList<BookModel> books = new ArrayList<>();
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM-yyyy");
