@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Locale;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
+import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
 import com.douglasdb.camel.feat.core.transform.csv.CsvRoute;
+import com.douglasdb.camel.feat.core.transform.enrich.EnrichRoute;
 import org.apache.camel.RoutesBuilder;
+import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +32,8 @@ public class EntryPoint extends CamelTestSupport {
 	@Override
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
-		return new CsvRoute();
+		return new EnrichRoute();
+				// CsvRoute();
 				// OrderToCsvBeanRoute();
 	}
 
@@ -38,6 +42,15 @@ public class EntryPoint extends CamelTestSupport {
 		super.doPreSetup();
 
 		Locale.setDefault(Locale.US);
+	}
+
+	@Override
+	protected JndiRegistry createRegistry() throws Exception {
+		JndiRegistry jndiRegistry = super.createRegistry();
+
+		jndiRegistry.bind("myExpander", new AbbreviationExpander());
+
+		return jndiRegistry;
 	}
 
 	@Test
@@ -73,6 +86,7 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testCsvUnmarshal() throws Exception {
 
 		final String request = "PROGRAMMING,Camel in Action,en,Claus Ibsen,Jon Anstey,Dec-2010,49.99\n" +
@@ -84,6 +98,20 @@ public class EntryPoint extends CamelTestSupport {
 
 		System.out.println(response.get(0));
 		assertEquals(this.getBookModel().get(0), response.get(0));
+
+	}
+
+
+	@Test
+	public void testEnrich() {
+
+		String response = template.requestBody("direct:start", "MA", String.class);
+
+		assertEquals("Massachusetts", response);
+
+		response = template.requestBody("direct:start", "CA", String.class);
+
+		assertEquals("California", response);
 
 	}
 
