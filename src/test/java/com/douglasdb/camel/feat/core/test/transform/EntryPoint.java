@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
+import com.douglasdb.camel.feat.core.domain.jaxb.Bookstore;
 import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
 import com.douglasdb.camel.feat.core.transform.enrich.EnrichXsltRoute;
 import org.apache.camel.RoutesBuilder;
@@ -118,6 +119,7 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testEnrichXslt() throws Exception {
 		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
 		final String request = context().getTypeConverter().convertTo(String.class, resource);
@@ -126,6 +128,14 @@ public class EntryPoint extends CamelTestSupport {
 
 		log.info("Response = {}", response);
 		assertEquals("<books><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
+	}
+
+	@Test
+	public void testJaxbMarshal() {
+		
+		Bookstore bookstore = new Bookstore();
+
+		
 	}
 
 
