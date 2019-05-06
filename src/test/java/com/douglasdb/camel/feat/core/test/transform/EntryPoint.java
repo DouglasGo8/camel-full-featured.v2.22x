@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Locale;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
+import com.douglasdb.camel.feat.core.domain.json.View;
 import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
-import com.douglasdb.camel.feat.core.transform.enrich.EnrichXsltRoute;
+import com.douglasdb.camel.feat.core.transform.json.JsonJacksonRoute;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.transform.bean.OrderToCsvBeanRoute;
 
 /**
  * 
@@ -32,7 +32,8 @@ public class EntryPoint extends CamelTestSupport {
 	@Override
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
-		return new EnrichXsltRoute();
+		return new JsonJacksonRoute();
+				// EnrichXsltRoute();
 				// EnrichRoute();
 				// CsvRoute();
 				// OrderToCsvBeanRoute();
@@ -118,6 +119,7 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testEnrichXslt() throws Exception {
 		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
 		final String request = context().getTypeConverter().convertTo(String.class, resource);
@@ -128,6 +130,76 @@ public class EntryPoint extends CamelTestSupport {
 		assertEquals("<books><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
 	}
 
+	@Test
+	@Ignore
+	public void testJsonJacksonMarshal() {
+		View view = new View();
+
+		view.setAge(29);
+		view.setHeight(46);
+		view.setWeight(34);
+
+		String response = super.template.requestBody("direct:marshal", view, String.class);
+
+		log.info(response);
+		assertEquals("{\"age\":29,\"weight\":34,\"height\":46}", response);
+
+	}
+
+
+	@Test
+	@Ignore
+	public void testJsonJacksonUnmarshal() {
+
+		final String request = "{\"age\":29,\"weight\":34,\"height\":46}";
+
+
+		View response = super.template.requestBody("direct:unmarshal", request, View.class);
+
+
+		View view = new View();
+
+		view.setAge(29);
+		view.setHeight(46);
+		view.setWeight(34);
+
+		assertEquals(view, response);
+
+	}
+
+
+	@Test
+	@Ignore
+	public void testJsonJacksonMarshalXStream() {
+		View view = new View();
+
+		view.setAge(29);
+		view.setHeight(46);
+		view.setWeight(34);
+
+		String response = super.template.requestBody("direct:marshal_xstream", view, String.class);
+
+		log.info(response);
+		assertEquals("{\"com.douglasdb.camel.feat.core.domain.json.View\":{\"age\":29,\"weight\":34,\"height\":46}}",
+				response);
+
+	}
+
+
+	@Test
+	public void testJsonUnmarshal() throws Exception {
+		final String request = "{\"com.douglasdb.camel.feat.core.domain.json.View\":{\"age\":29,\"weight\":34,\"height\":46}}";
+
+		View response = template.requestBody("direct:unmarshal_xstream", request, View.class);
+
+		View view = new View();
+
+		view.setAge(29);
+		view.setHeight(46);
+		view.setWeight(34);
+
+		assertEquals(view, response);
+	}
 
 	/**
 	 *
