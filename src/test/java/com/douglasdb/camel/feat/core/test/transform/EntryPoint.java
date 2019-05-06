@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.Locale;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
+<<<<<<< HEAD
 import com.douglasdb.camel.feat.core.domain.json.View;
+=======
+import com.douglasdb.camel.feat.core.domain.jaxb.Bookstore;
+>>>>>>> c967a375fe3d76c1d907880db3f2e8ca84f9a4e4
 import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
 import com.douglasdb.camel.feat.core.transform.json.JsonJacksonRoute;
 import org.apache.camel.RoutesBuilder;
@@ -131,6 +135,7 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 	@Test
+<<<<<<< HEAD
 	@Ignore
 	public void testJsonJacksonMarshal() {
 		View view = new View();
@@ -200,6 +205,15 @@ public class EntryPoint extends CamelTestSupport {
 
 		assertEquals(view, response);
 	}
+=======
+	public void testJaxbMarshal() {
+		
+		Bookstore bookstore = new Bookstore();
+
+		
+	}
+
+>>>>>>> c967a375fe3d76c1d907880db3f2e8ca84f9a4e4
 
 	/**
 	 *
