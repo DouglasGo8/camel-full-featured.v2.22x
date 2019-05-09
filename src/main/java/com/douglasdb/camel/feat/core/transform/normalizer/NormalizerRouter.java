@@ -17,6 +17,10 @@ import com.douglasdb.camel.feat.core.domain.jaxb.Bookstore;
  */
 public class NormalizerRouter extends RouteBuilder {
 
+	
+	/**
+	 * 
+	 */
 	@Override
 	public void configure() throws Exception {
 
