@@ -186,6 +186,7 @@ public class EntryPoint extends CamelTestSupport {
 
 
 	@Test
+	@Ignore
 	public void testJsonUnmarshal() throws Exception {
 		final String request = "{\"com.douglasdb.camel.feat.core.domain.json.View\":{\"age\":29,\"weight\":34,\"height\":46}}";
 
@@ -201,6 +202,15 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 
+
+	@Test
+	public void testNormalizeXml() {
+		
+		final InputStream resource =  getClass().getClassLoader().getResourceAsStream("/src/main/resources/META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		System.out.println(resource);
+	}
 
 
 
