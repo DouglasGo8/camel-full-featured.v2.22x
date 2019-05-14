@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
@@ -226,7 +227,9 @@ public class EntryPoint extends CamelTestSupport {
 		}
 	}
 
+	
 	@Test
+	@Ignore
 	public void testNormalizeCsv() throws Exception {
 		
 		final InputStream resource = getClass().getResourceAsStream("/META-INF/bookstore/bookstore.csv");
@@ -245,6 +248,48 @@ public class EntryPoint extends CamelTestSupport {
 
 		assertMockEndpointsSatisfied();
 	}
+
+	@Test
+	@Ignore
+	public void testNormalizeJson() throws Exception {
+
+		final InputStream resource = getClass().getResourceAsStream("/META-INF/bookstore/bookstore.json");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		super.getMockEndpoint("mock:unknown").setExpectedMessageCount(0);
+		super.getMockEndpoint("mock:csv").setExpectedMessageCount(0);
+		super.getMockEndpoint("mock:xml").setExpectedMessageCount(0);
+
+		super.getMockEndpoint("mock:json").expectedBodiesReceived(getExpectedBookstore());
+		super.getMockEndpoint("mock:normalized").expectedBodiesReceived(getExpectedBookstore());
+			
+		template.sendBodyAndHeader("direct:start", request, Exchange.FILE_NAME, "bookstore.json");
+
+		assertMockEndpointsSatisfied();
+	}
+
+
+
+	@Test
+    public void testNormalizeUnknown() throws Exception {
+        getMockEndpoint("mock:csv").setExpectedMessageCount(0);
+        getMockEndpoint("mock:json").setExpectedMessageCount(0);
+        getMockEndpoint("mock:xml").setExpectedMessageCount(0);
+        getMockEndpoint("mock:normalized").setExpectedMessageCount(0);
+
+        final MockEndpoint mockUnknown = getMockEndpoint("mock:unknown");
+        mockUnknown.expectedBodiesReceived("Unknown Data");
+        mockUnknown.expectedHeaderReceived(Exchange.FILE_NAME, "bookstore.unknown");
+
+        template.sendBodyAndHeader("direct:start", "Unknown Data", Exchange.FILE_NAME, "bookstore.unknown");
+
+        assertMockEndpointsSatisfied();
+    }
+
+
+
+
+
 
 	/**
 	 *

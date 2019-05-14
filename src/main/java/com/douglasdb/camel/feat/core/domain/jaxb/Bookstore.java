@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,12 +19,14 @@ import lombok.NoArgsConstructor;
 @Data
 @XmlRootElement
 @NoArgsConstructor
+@JsonRootName(value = "bookstore")
+@JsonDeserialize(as = ArrayList.class, contentAs = Bookstore.class)
 public class Bookstore {
-	
-	
+
 	/**
 	 * 
 	 */
-	private List<Book> book = new ArrayList<Book>();
 	
+	private List<Book> book = new ArrayList<Book>();
+
 }

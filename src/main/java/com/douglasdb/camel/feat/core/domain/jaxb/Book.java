@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,7 +37,7 @@ public class Book implements Serializable {
 	@XmlAttribute
 	private String category;
 
-	private List<String> author = new ArrayList<String>();
+	@JacksonXmlElementWrapper private List<String> author = new ArrayList<String>();
 
 	/**
 	 * 
