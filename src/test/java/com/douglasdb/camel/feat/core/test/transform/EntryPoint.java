@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.douglasdb.camel.feat.core.transform.xquery.XqueryParamRoute;
+import com.douglasdb.camel.feat.core.transform.xslt.XsltParamRoute;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -22,7 +24,7 @@ import com.douglasdb.camel.feat.core.domain.jaxb.Book;
 import com.douglasdb.camel.feat.core.domain.jaxb.Bookstore;
 import com.douglasdb.camel.feat.core.domain.json.View;
 import com.douglasdb.camel.feat.core.enrich.AbbreviationExpander;
-import com.douglasdb.camel.feat.core.transform.normalizer.NormalizerRouter;
+
 
 /**
  * 
@@ -34,12 +36,16 @@ public class EntryPoint extends CamelTestSupport {
 	@Override
 	protected RoutesBuilder createRouteBuilder() throws Exception {
 		// TODO Auto-generated method stub
-		return new NormalizerRouter();
-		// JsonJacksonRoute();
-		// EnrichXsltRoute();
-		// EnrichRoute();
-		// CsvRoute();
-		// OrderToCsvBeanRoute();
+		return new //XsltParamRoute();
+				XqueryParamRoute();
+			// XmlJsonRoute();
+			// SimpleRoute();
+			// NormalizerRouter();
+			// JsonJacksonRoute();
+			// EnrichXsltRoute();
+			// EnrichRoute();
+			// CsvRoute();
+			// OrderToCsvBeanRoute();
 	}
 
 	@Override
@@ -271,6 +277,7 @@ public class EntryPoint extends CamelTestSupport {
 
 
 	@Test
+	@Ignore
     public void testNormalizeUnknown() throws Exception {
         getMockEndpoint("mock:csv").setExpectedMessageCount(0);
         getMockEndpoint("mock:json").setExpectedMessageCount(0);
@@ -288,9 +295,130 @@ public class EntryPoint extends CamelTestSupport {
 
 
 
+	@Test
+	@Ignore
+	public void testSimple() throws Exception {
+		String response = template.requestBody("direct:start", "Camel Rocks", String.class);
+
+		assertEquals("Hello Camel Rocks", response);
+	}
+
+	@Test
+	@Ignore
+	public void testXmlJsonMarshal() throws Exception {
+
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		final String response = template.requestBody("direct:marshal", request, String.class);
+
+
+	}
+
+
+	@Test
+	@Ignore
+	public void testXmlJsonUnmarshal() throws Exception {
+		final String request = "[" +
+				"{\"@category\":\"COOKING\",\"title\":{\"@lang\":\"en\",\"#text\":\"Everyday Italian\"},\"author\":\"Giada De Laurentiis\",\"year\":\"2005\",\"price\":\"30.00\"}," +
+				"{\"@category\":\"CHILDREN\",\"title\":{\"@lang\":\"en\",\"#text\":\"Harry Potter\"},\"author\":\"J K. Rowling\",\"year\":\"2005\",\"price\":\"29.99\"}," +
+				"{\"@category\":\"WEB\",\"title\":{\"@lang\":\"en\",\"#text\":\"Learning XML\"},\"author\":\"Erik T. Ray\",\"year\":\"2003\",\"price\":\"39.95\"}," +
+				"{\"@category\":\"PROGRAMMING\",\"title\":{\"@lang\":\"en\",\"#text\":\"Apache Camel Developer's Cookbook\"},\"author\":[\"Scott Cranton\",\"Jakub Korab\"],\"year\":\"2013\",\"price\":\"49.99\"}" +
+				"]";
+
+		final String response = template.requestBody("direct:unmarshal", request, String.class);
+
+		log.info(response);
+		assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+				"<a>" +
+				"<e category=\"COOKING\"><author>Giada De Laurentiis</author><price>30.00</price><title lang=\"en\">Everyday Italian</title><year>2005</year></e>" +
+				"<e category=\"CHILDREN\"><author>J K. Rowling</author><price>29.99</price><title lang=\"en\">Harry Potter</title><year>2005</year></e>" +
+				"<e category=\"WEB\"><author>Erik T. Ray</author><price>39.95</price><title lang=\"en\">Learning XML</title><year>2003</year></e>" +
+				"<e category=\"PROGRAMMING\"><author><e>Scott Cranton</e><e>Jakub Korab</e></author><price>49.99</price><title lang=\"en\">Apache Camel Developer's Cookbook</title><year>2013</year></e>" +
+				"</a>\r\n", response);
+
+
+	}
+
+
+	@Test
+	public void testXmlJsonUnmarshalBookstore() throws Exception {
+		final String request = "[" +
+				"{\"@category\":\"COOKING\",\"title\":{\"@lang\":\"en\",\"#text\":\"Everyday Italian\"},\"author\":\"Giada De Laurentiis\",\"year\":\"2005\",\"price\":\"30.00\"}," +
+				"{\"@category\":\"CHILDREN\",\"title\":{\"@lang\":\"en\",\"#text\":\"Harry Potter\"},\"author\":\"J K. Rowling\",\"year\":\"2005\",\"price\":\"29.99\"}," +
+				"{\"@category\":\"WEB\",\"title\":{\"@lang\":\"en\",\"#text\":\"Learning XML\"},\"author\":\"Erik T. Ray\",\"year\":\"2003\",\"price\":\"39.95\"}," +
+				"{\"@category\":\"PROGRAMMING\",\"title\":{\"@lang\":\"en\",\"#text\":\"Apache Camel Developer's Cookbook\"},\"author\":[\"Scott Cranton\",\"Jakub Korab\"],\"year\":\"2013\",\"price\":\"49.99\"}" +
+				"]";
+
+		final String response = template.requestBody("direct:unmarshalBookstore", request, String.class);
+
+		log.info(response);
+		assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+				"<bookstore>" +
+				"<book category=\"COOKING\"><author>Giada De Laurentiis</author><price>30.00</price><title lang=\"en\">Everyday Italian</title><year>2005</year></book>" +
+				"<book category=\"CHILDREN\"><author>J K. Rowling</author><price>29.99</price><title lang=\"en\">Harry Potter</title><year>2005</year></book>" +
+				"<book category=\"WEB\"><author>Erik T. Ray</author><price>39.95</price><title lang=\"en\">Learning XML</title><year>2003</year></book>" +
+				"<book category=\"PROGRAMMING\"><author>Scott Cranton</author><author>Jakub Korab</author><price>49.99</price><title lang=\"en\">Apache Camel Developer's Cookbook</title><year>2013</year></book>" +
+				"</bookstore>\r\n", response);
+	}
+
+
+	@Test
+	@Ignore
+	public void testXqueryParam() throws Exception {
+
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+
+		String response = template.requestBodyAndHeader("direct:start",
+				request, "myParamValue", new Integer(30), String.class);
+
+	}
+
+	@Test
+	@Ignore
+	public void testXquery() throws Exception {
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		String response = template.requestBody("direct:start2", request, String.class);
+
+		log.info("Response = {}", response);
+		assertEquals("<books><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
+	}
 
 
 
+
+	@Test
+	@Ignore
+	public void testXsltParam() throws Exception {
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		String response = template.requestBodyAndHeader("direct:start", request, "myParamValue", 30, String.class);
+
+		log.info("Response > 30 = {}", response);
+		assertEquals("<books value=\"30\"><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
+
+		response = template.requestBodyAndHeader("direct:start", request, "myParamValue", 40, String.class);
+
+		log.info("Response > 40 = {}", response);
+		assertEquals("<books value=\"40\"><title lang=\"en\">Apache Camel Developer's Cookbook</title></books>", response);
+	}
+
+
+	@Test
+	public void testXslt() throws Exception {
+		final InputStream resource = getClass().getClassLoader().getResourceAsStream("META-INF/bookstore/bookstore.xml");
+		final String request = context().getTypeConverter().convertTo(String.class, resource);
+
+		String response = template.requestBody("direct:start2", request, String.class);
+
+		log.info("Response = {}", response);
+		assertEquals("<books><title lang=\"en\">Apache Camel Developer's Cookbook</title><title lang=\"en\">Learning XML</title></books>", response);
+	}
 	/**
 	 *
 	 * @return

@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.test.routing;
+package com.douglasdb.camel.feat.core.test.routing.cookbook;
 
 import static java.lang.System.out;
 
@@ -15,7 +15,7 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.routing.ThrottlerAsyncDelayedRoute;
+import com.douglasdb.camel.feat.core.routing.cookbook.ThrottlerAsyncDelayedRoute;
 
 /**
  * @author douglasdias

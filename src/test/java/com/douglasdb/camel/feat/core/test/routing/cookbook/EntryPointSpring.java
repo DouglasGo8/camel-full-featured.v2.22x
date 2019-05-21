@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.test.routing;
+package com.douglasdb.camel.feat.core.test.routing.cookbook;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
