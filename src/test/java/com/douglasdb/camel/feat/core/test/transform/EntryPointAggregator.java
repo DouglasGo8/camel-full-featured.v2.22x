@@ -1,16 +1,20 @@
 package com.douglasdb.camel.feat.core.test.transform;
 
 
-import com.douglasdb.camel.feat.core.transform.enrich.AbbreviationExpander;
-import com.douglasdb.camel.feat.core.transform.enrich.EnrichWithAggregatorRoute;
-import com.douglasdb.camel.feat.core.transform.enrich.MergeInReplacementText;
-import org.apache.camel.CamelContext;
-
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 
+import com.douglasdb.camel.feat.core.transform.enrich.AbbreviationExpander;
+import com.douglasdb.camel.feat.core.transform.enrich.EnrichWithAggregatorRoute;
+import com.douglasdb.camel.feat.core.transform.enrich.MergeInReplacementText;
+
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public class EntryPointAggregator extends CamelTestSupport {
 
 

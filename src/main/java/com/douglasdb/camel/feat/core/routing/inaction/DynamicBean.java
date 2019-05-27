@@ -8,7 +8,7 @@ import org.apache.camel.Header;
  * @author Administrator
  *
  */
-public class DynamicRouterBean {
+public class DynamicBean {
 	
 	/**
 	 * 

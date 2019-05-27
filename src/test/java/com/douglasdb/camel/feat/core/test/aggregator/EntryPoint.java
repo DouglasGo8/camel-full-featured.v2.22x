@@ -1,8 +1,9 @@
 package com.douglasdb.camel.feat.core.test.aggregator;
 
 
-import com.douglasdb.camel.feat.core.aggregator.AggregatorABCPojoRoute;
-import com.douglasdb.camel.feat.core.aggregator.AggregatorTimeoutThreadPoolRoute;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
@@ -12,8 +13,7 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.douglasdb.camel.feat.core.aggregator.AggregatorTimeoutThreadPoolRoute;
 
 
 /**
