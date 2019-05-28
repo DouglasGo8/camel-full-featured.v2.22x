@@ -14,7 +14,8 @@ public class XmlJsonRoute extends RouteBuilder {
      *
      * @throws Exception
      */
-    @Override
+	@Override
+	@SuppressWarnings("deprecation")
     public void configure() throws Exception {
 
         from("direct:marshal")

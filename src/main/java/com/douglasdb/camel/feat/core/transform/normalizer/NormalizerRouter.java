@@ -1,16 +1,15 @@
 package com.douglasdb.camel.feat.core.transform.normalizer;
 
+import java.util.Arrays;
+
+import javax.xml.bind.JAXBContext;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.converter.jaxb.JaxbDataFormat;
 import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.apache.camel.model.dataformat.XmlJsonDataFormat;
 import org.apache.camel.spi.DataFormat;
-
-import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
 
 import com.douglasdb.camel.feat.core.domain.csv.BookModel;
 import com.douglasdb.camel.feat.core.domain.jaxb.Bookstore;
