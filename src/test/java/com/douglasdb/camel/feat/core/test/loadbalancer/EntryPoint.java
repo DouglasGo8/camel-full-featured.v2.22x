@@ -1,28 +1,29 @@
 package com.douglasdb.camel.feat.core.test.loadbalancer;
 
-import com.douglasdb.camel.feat.core.loadbalancer.FailoverInheritErrorHandlerLoadBalancerRouter;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import com.douglasdb.camel.feat.core.loadbalancer.FailoverInheritErrorHandlerLoadBalancerRouter;
 
 /**
  * @author Administrator
  */
 public class EntryPoint extends CamelTestSupport {
 
-    @Override
-    protected RoutesBuilder createRouteBuilder() throws Exception {
-        
-        return new FailoverInheritErrorHandlerLoadBalancerRouter();
-        // LoadBalancer();
-        // CircuitBreakerLoadBalancerRouter();
-    }
+	
+	@Override
+	protected RoutesBuilder createRouteBuilder() throws Exception {
+		// TODO Auto-generated method stub
+		return new FailoverInheritErrorHandlerLoadBalancerRouter();
+	}
 
     /**
      * @throws InterruptedException
@@ -82,7 +83,7 @@ public class EntryPoint extends CamelTestSupport {
      *
      */
     @Test
-    @Ignore
+    @Ignore    
     public void testLoadBalancer() throws InterruptedException {
 
         MockEndpoint a = super.getMockEndpoint("mock:a");
@@ -110,13 +111,12 @@ public class EntryPoint extends CamelTestSupport {
     @Test
     public void testLoadBalancerWithFailoverErrorHandler() throws Exception {
 
-        /*super.context.getRouteDefinition("start")
+        super.context.getRouteDefinition("start")
             .adviceWith(super.context, new RouteBuilder() {
-            
                 @Override
                 public void configure() throws Exception {
-                
                     super.interceptSendToEndpoint("direct:a")
+                        //.log("Intercepting body with ${body}")
                         .choice()
                             .when(body().contains("Kaboom"))
                                 .throwException(new IllegalArgumentException("Damn"))
@@ -125,20 +125,19 @@ public class EntryPoint extends CamelTestSupport {
                 }
         });
 
-        super.context.start();*/
+        super.context.start();
 
-        //MockEndpoint a = super.getMockEndpoint("mock:a");
+        MockEndpoint a = super.getMockEndpoint("mock:a");
 
-       // a.expectedBodiesReceived("Hello");
+        //a.setExpectedMessageCount(1);
+        a.expectedBodiesReceived("Hello");
 
-        //MockEndpoint b = super.getMockEndpoint("mock:b");
+        MockEndpoint b = super.getMockEndpoint("mock:b");
 
-        //b.expectedBodiesReceived("Hello");
-
-
+        b.expectedBodiesReceived("Kaboom");
 
         super.template.sendBody("direct:start", "Hello");
-        //super.template.sendBody("direct:start", "Kaboom");
+        super.template.sendBody("direct:start", "Kaboom");
 
 
         assertMockEndpointsSatisfied();
