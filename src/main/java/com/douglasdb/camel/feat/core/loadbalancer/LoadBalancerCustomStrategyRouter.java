@@ -5,7 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  *
  */
-public class LoadBalancer extends RouteBuilder {
+public class LoadBalancerCustomStrategyRouter extends RouteBuilder {
 
 
     @Override

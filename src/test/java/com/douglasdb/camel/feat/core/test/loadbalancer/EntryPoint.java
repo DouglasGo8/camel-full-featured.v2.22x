@@ -10,20 +10,25 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.douglasdb.camel.feat.core.loadbalancer.FailoverInheritErrorHandlerLoadBalancerRouter;
+import com.douglasdb.camel.feat.core.loadbalancer.TopicLoadBalancerRouter;
 
 /**
  * @author Administrator
  */
 public class EntryPoint extends CamelTestSupport {
 
-	
-	@Override
-	protected RoutesBuilder createRouteBuilder() throws Exception {
-		// TODO Auto-generated method stub
-		return new FailoverInheritErrorHandlerLoadBalancerRouter();
-	}
+    @Override
+    protected RoutesBuilder createRouteBuilder() throws Exception {
+
+        return new TopicLoadBalancerRouter();
+        // StickyLoadBalancertRouter();
+        // LoadBalancerRandomStrategyRouter();
+        // LoadBalancerRoundRobin();
+        // FailoverRoundRobinLoadBalancerRouter();
+        // FailoverLoadBalancer();
+        // LoadBalancerCustomStrategyRouter();
+        // FailoverInheritErrorHandlerLoadBalancerRouter();
+    }
 
     /**
      * @throws InterruptedException
@@ -83,7 +88,7 @@ public class EntryPoint extends CamelTestSupport {
      *
      */
     @Test
-    @Ignore    
+    @Ignore
     public void testLoadBalancer() throws InterruptedException {
 
         MockEndpoint a = super.getMockEndpoint("mock:a");
@@ -103,33 +108,33 @@ public class EntryPoint extends CamelTestSupport {
 
     }
 
+    /**
+     * 
+     */
     @Override
     public boolean isUseAdviceWith() {
-        return true;
+        return false; // true;
     }
 
     @Test
+    @Ignore
     public void testLoadBalancerWithFailoverErrorHandler() throws Exception {
 
-        super.context.getRouteDefinition("start")
-            .adviceWith(super.context, new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    super.interceptSendToEndpoint("direct:a")
-                        //.log("Intercepting body with ${body}")
-                        .choice()
-                            .when(body().contains("Kaboom"))
-                                .throwException(new IllegalArgumentException("Damn"))
-                            .end()
-                        .end();
-                }
+        super.context.getRouteDefinition("start").adviceWith(super.context, new RouteBuilder() {
+            @Override
+            public void configure() throws Exception {
+                super.interceptSendToEndpoint("direct:a")
+                        // .log("Intercepting body with ${body}")
+                        .choice().when(body().contains("Kaboom")).throwException(new IllegalArgumentException("Damn"))
+                        .end().end();
+            }
         });
 
         super.context.start();
 
         MockEndpoint a = super.getMockEndpoint("mock:a");
 
-        //a.setExpectedMessageCount(1);
+        // a.setExpectedMessageCount(1);
         a.expectedBodiesReceived("Hello");
 
         MockEndpoint b = super.getMockEndpoint("mock:b");
@@ -139,9 +144,135 @@ public class EntryPoint extends CamelTestSupport {
         super.template.sendBody("direct:start", "Hello");
         super.template.sendBody("direct:start", "Kaboom");
 
-
         assertMockEndpointsSatisfied();
 
+    }
+
+    /**
+     * 
+     */
+    @Test
+    @Ignore
+    public void testLoadBalancerWithFailover() throws InterruptedException {
+
+        final MockEndpoint mock_a = super.getMockEndpoint("mock:a");
+        final MockEndpoint mock_b = super.getMockEndpoint("mock:b");
+
+        mock_a.setExpectedMessageCount(1);
+        mock_a.expectedBodiesReceived("Hello", "Cool", "Bye");
+
+        mock_b.expectedBodiesReceived("Kaboom");
+
+        super.template.sendBody("direct:start", "Hello");
+        super.template.sendBody("direct:start", "Kaboom");
+        super.template.sendBody("direct:start", "Cool");
+        super.template.sendBody("direct:start", "Bye");
+
+        assertMockEndpointsSatisfied();
+    }
+
+    /**
+     * 
+     * @throws InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testLoadBalancerRoundRobinWithFailover() throws InterruptedException {
+
+        final MockEndpoint mock_a = super.getMockEndpoint("mock:a");
+        final MockEndpoint mock_b = super.getMockEndpoint("mock:b");
+
+        mock_a.setExpectedMessageCount(1);
+        mock_a.expectedBodiesReceived("Hello", "Boom");
+
+        mock_b.expectedBodiesReceived("Bye", "Kaboom");
+
+        super.template.sendBody("direct:start", "Hello");
+        super.template.sendBody("direct:start", "Boom");
+        super.template.sendBody("direct:start", "Bye");
+        super.template.sendBody("direct:start", "Kaboom");
+
+        assertMockEndpointsSatisfied();
+    }
+
+    /**
+     * 
+     * @throws InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testLoadBalancerRoundRobin() throws InterruptedException {
+
+        final MockEndpoint mock_a = super.getMockEndpoint("mock:a");
+        final MockEndpoint mock_b = super.getMockEndpoint("mock:b");
+
+        mock_a.setExpectedMessageCount(1);
+        mock_a.expectedBodiesReceived("Hello", "Cool");
+
+        mock_b.expectedBodiesReceived("Camel Rocks", "Bye");
+
+        super.template.sendBody("direct:start", "Hello");
+        super.template.sendBody("direct:start", "Camel Rocks");
+        super.template.sendBody("direct:start", "Cool");
+        super.template.sendBody("direct:start", "Bye");
+
+        assertMockEndpointsSatisfied();
+    }
+
+    /**
+     * 
+     * @throws InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testLoadBalancerRandomStrategy() throws InterruptedException {
+
+        super.template.sendBody("direct:start", "Hello");
+        super.template.sendBody("direct:start", "Camel Rocks");
+        super.template.sendBody("direct:start", "Cool");
+        super.template.sendBody("direct:start", "Bye");
+
+    }
+
+    /**
+     * 
+     * @throws InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testLoadBalancerWithSticky() throws InterruptedException {
+
+        final MockEndpoint mock_a = super.getMockEndpoint("mock:a");
+        final MockEndpoint mock_b = super.getMockEndpoint("mock:b");
+
+        mock_a.setExpectedMessageCount(1);
+        mock_a.expectedBodiesReceived("Hello", "Bye");
+
+        mock_b.expectedBodiesReceived("Camel Rocks", "Cool");
+
+        super.template.sendBodyAndHeader("direct:start", "Hello", "type", "gold");
+        super.template.sendBodyAndHeader("direct:start", "Camel Rocks", "type", "silver");
+        super.template.sendBodyAndHeader("direct:start", "Cool", "type", "silver");
+        super.template.sendBodyAndHeader("direct:start", "Bye", "type", "gold");
+
+        assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    public void testLoadBalancerWithTopicStrategy() throws InterruptedException {
+
+        final MockEndpoint mock_a = super.getMockEndpoint("mock:a");
+        final MockEndpoint mock_b = super.getMockEndpoint("mock:b");
+
+        mock_a.setExpectedMessageCount(4);
+        mock_b.setExpectedMessageCount(4);
+
+        super.template.sendBodyAndHeader("direct:start", "Hello", "type", "gold");
+        super.template.sendBodyAndHeader("direct:start", "Camel Rocks", "type", "silver");
+        super.template.sendBodyAndHeader("direct:start", "Cool", "type", "silver");
+        super.template.sendBodyAndHeader("direct:start", "Bye", "type", "gold");
+
+        assertMockEndpointsSatisfied();
     }
 
     /**
@@ -149,7 +280,7 @@ public class EntryPoint extends CamelTestSupport {
      * @param param
      */
     private void sendMessage(final String endpoint, Consumer<Exchange> param) {
-        super.template.send(endpoint, (exchante) -> param.accept(exchante));
+        super.template.send(endpoint, (exchange) -> param.accept(exchange));
     }
 
 }

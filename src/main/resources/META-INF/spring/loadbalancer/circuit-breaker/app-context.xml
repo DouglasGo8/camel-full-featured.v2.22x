@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd          
+           http://www.springframework.org/schema/context        
+           http://www.springframework.org/schema/context/spring-context.xsd          
+           http://camel.apache.org/schema/spring        
+           http://camel.apache.org/schema/spring/camel-spring.xsd">
+   
+    <bean id="damn" class="java.lang.IllegalArgumentException">
+        <constructor-arg index="0" value="Damn" />
+    </bean>
+
+
+    <camel:camelContext>
+        <camel:route>
+            <camel:from uri="direct:start" />
+            <camel:loadBalance>
+                <camel:circuitBreaker threshold="2" halfOpenAfter="2000">
+                    <camel:exception>java.lang.Exception</camel:exception>
+                </camel:circuitBreaker>
+                <camel:to uri="direct:a" />
+            </camel:loadBalance>
+        </camel:route>
+        <camel:route>
+            <camel:from uri="direct:a" />
+            <camel:log message="A received: ${body}"/>
+            <camel:choice>
+                <camel:when>
+                    <camel:simple>${body} contains 'Kaboom'</camel:simple>
+                    <camel:throwException ref="damn"/>
+                </camel:when>
+            </camel:choice>
+            <camel:to uri="mock:a" />
+        </camel:route>
+    </camel:camelContext>
+    
+
+</beans>
