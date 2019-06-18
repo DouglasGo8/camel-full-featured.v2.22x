@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd          
+           http://www.springframework.org/schema/context        
+           http://www.springframework.org/schema/context/spring-context.xsd          
+           http://camel.apache.org/schema/spring        
+           http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <bean id="myCustom" class="com.douglasdb.camel.feat.core.loadbalancer.MyCustomLoadBalancer" />
+
+    <camel:camelContext>
+
+        <camel:route>
+            <camel:from uri="direct:start"/>
+            <camel:loadBalance>
+                <camel:custom ref="myCustom"/>
+                <camel:to uri="seda:a"/>
+                <camel:to uri="seda:b"/>
+            </camel:loadBalance>
+        </camel:route>
+
+        <camel:route>
+            <camel:from uri="seda:a"/>
+            <camel:log message="A received: ${body}"/>
+            <camel:to uri="mock:a"/>
+        </camel:route>
+
+        <camel:route>
+            <camel:from uri="seda:b"/>
+            <camel:log message="B received: ${body}"/>
+            <camel:to uri="mock:b"/>
+        </camel:route>
+
+
+    </camel:camelContext>
+    
+
+</beans>

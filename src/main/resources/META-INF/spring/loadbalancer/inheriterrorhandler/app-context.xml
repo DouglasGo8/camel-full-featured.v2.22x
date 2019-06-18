@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd          
+           http://www.springframework.org/schema/context        
+           http://www.springframework.org/schema/context/spring-context.xsd          
+           http://camel.apache.org/schema/spring        
+           http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <bean id="damn" class="java.lang.IllegalArgumentException">
+        <constructor-arg index="0" value="Damn"/>
+    </bean>
+
+
+    <camel:camelContext>
+
+        <camel:errorHandler id="eH">
+            <!-- retry at most 3 times with 2 sec delay -->
+            <camel:redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="2000"
+                                    retriesExhaustedLogLevel="WARN"
+                                    retryAttemptedLogLevel="WARN"
+                                    logStackTrace="false"/>
+        </camel:errorHandler>
+
+        <camel:route id="start" errorHandlerRef="eH">
+            <camel:from uri="direct:start"/>
+
+            <camel:loadBalance inheritErrorHandler="true">
+                <camel:failover maximumFailoverAttempts="1"/>
+                <camel:to uri="direct:a"/>
+                <camel:to uri="direct:b"/>
+            </camel:loadBalance>
+
+        </camel:route>
+
+        <camel:route>
+            <camel:from uri="direct:a"/>
+            <camel:log message="A receveid: ${body}"/>
+            <camel:choice>
+                <camel:when>
+                    <camel:simple>${body} contains 'Kaboom'</camel:simple>
+                    <camel:throwException ref="damn"/>
+                </camel:when>
+            </camel:choice>
+            <camel:to uri="mock:a"/>
+        </camel:route>
+
+        <camel:route>
+            <camel:from uri="direct:b"/>
+            <camel:log message="B receveid: ${body}"/>
+            <camel:to uri="mock:b"/>
+        </camel:route>
+
+
+    </camel:camelContext>
+
+
+</beans>

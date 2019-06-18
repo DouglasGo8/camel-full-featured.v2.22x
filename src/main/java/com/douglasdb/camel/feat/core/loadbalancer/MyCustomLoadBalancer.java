@@ -15,7 +15,8 @@ public class MyCustomLoadBalancer extends SimpleLoadBalancerSupport {
     @Override
     public void process(Exchange exchange) throws Exception {
 
-        final Function<Exchange, Processor> target = e -> "gold".equals(e.getIn().getHeader("type", String.class)) ?
+        final Function<Exchange, Processor> target = e ->
+                "gold".equals(e.getIn().getHeader("type", String.class)) ?
                   super.getProcessors().get(0):
                   super.getProcessors().get(1);
 
