@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans            
+		http://www.springframework.org/schema/beans/spring-beans.xsd                      
+		http://www.springframework.org/schema/context                   
+		 http://www.springframework.org/schema/context/spring-context.xsd                      
+		 http://camel.apache.org/schema/spring                   
+		  http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<bean class="java.lang.IllegalArgumentException" id="damn">
+		<constructor-arg index="0" value="Damn" />
+	</bean>
+
+	<camel:camelContext
+		id="camelContext-48273c8c-1e3f-4c9e-add1-68c9170f47e2">
+
+		<camel:route>
+			<camel:from uri="direct:start" />
+			<camel:loadBalance inheritErrorHandler="false">
+				<camel:failover maximumFailoverAttempts="1"
+					roundRobin="true" />
+				<camel:to uri="direct:a" />
+				<camel:to uri="direct:b" />
+			</camel:loadBalance>
+		</camel:route>
+
+		<camel:route>
+			<camel:from uri="direct:a" />
+			<camel:log message="A received: ${body}" />
+			<camel:choice>
+				<camel:when>
+					<camel:simple>${body} contains 'Kaboom'</camel:simple>
+					<camel:throwException ref="damn" />
+				</camel:when>
+			</camel:choice>
+			<camel:to uri="mock:a" />
+		</camel:route>
+		
+		<camel:route>
+			<camel:from uri="direct:b" />
+			<camel:log message="B received: ${body}" />
+			<camel:choice>
+				<camel:when>
+					<camel:simple>${body} contains 'Boom'</camel:simple>
+					<camel:throwException ref="damn" />
+				</camel:when>
+			</camel:choice>
+			<camel:to uri="mock:b" />
+		</camel:route>
+
+	</camel:camelContext>
+</beans>

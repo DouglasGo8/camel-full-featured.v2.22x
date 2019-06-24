@@ -258,6 +258,10 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
+    /**
+     * Works a Broadcast message
+     * @throws InterruptedException
+     */
     @Test
     public void testLoadBalancerWithTopicStrategy() throws InterruptedException {
 

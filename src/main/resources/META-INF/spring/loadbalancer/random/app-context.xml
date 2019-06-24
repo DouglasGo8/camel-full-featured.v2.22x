@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <camel:camelContext id="camelContext-15606bf5-0352-4c69-9ecf-5e7c5b6c6c86">
+        <camel:route id="_route78">
+            <camel:from id="_from1" uri="direct:start"/>
+            <camel:loadBalance id="_loadBalance1">
+                <camel:random id="_random1"/>
+                <camel:to id="_to1" uri="seda:a"/>
+                <camel:to id="_to2" uri="seda:b"/>
+                <camel:to id="_to3" uri="seda:c"/>
+            </camel:loadBalance>
+        </camel:route>
+        <camel:route id="_route79">
+            <camel:from id="_from2" uri="seda:a"/>
+            <camel:log id="_log1" message="A received: ${body}"/>
+        </camel:route>
+        <camel:route id="_route80">
+            <camel:from id="_from3" uri="seda:b"/>
+            <camel:log id="_log2" message="B received: ${body}"/>
+        </camel:route>
+        <camel:route id="_route81">
+            <camel:from id="_from4" uri="seda:c"/>
+            <camel:log id="_log3" message="C received: ${body}"/>
+        </camel:route>
+    </camel:camelContext>
+</beans>

@@ -1,5 +1,10 @@
 package com.douglasdb.camel.feat.core.transform.enrich;
 
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public class AbbreviationExpander {
 
     public String expand(String abbreviation) {

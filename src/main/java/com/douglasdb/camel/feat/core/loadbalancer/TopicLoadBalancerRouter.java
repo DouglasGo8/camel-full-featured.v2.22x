@@ -10,8 +10,9 @@ public class TopicLoadBalancerRouter extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+    	
         from("direct:start")
-                // use load balancer with round robin strategy
+                // use load balancer with topic strategy
             .loadBalance().topic()
             .to("seda:a").to("seda:b")
         .end();
