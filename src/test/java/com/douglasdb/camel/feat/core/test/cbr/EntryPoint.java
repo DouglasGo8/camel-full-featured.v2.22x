@@ -30,7 +30,7 @@ public class EntryPoint extends CamelTestSupport {
 	}
 
 	/**
-	 *
+	 * 
 	 */
 	@Override
 	protected CamelContext createCamelContext() throws Exception {
