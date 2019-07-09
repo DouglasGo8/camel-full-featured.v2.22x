@@ -5,7 +5,7 @@ package com.douglasdb.camel.feat.core.splitter;
 
 import org.apache.camel.builder.RouteBuilder;
 
-public class SplitAggregateExceptionABCRouter extends RouteBuilder {
+public class SplitAggregateExceptionABCRoute extends RouteBuilder {
 
     /**
      * 

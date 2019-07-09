@@ -8,7 +8,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * 
  */
-public class SplitterABCRouter extends RouteBuilder {
+public class SplitterABCRoute extends RouteBuilder {
 
 
 

@@ -13,7 +13,8 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.aggregator.AggregatorTimeoutThreadPoolRoute;
+import com.douglasdb.camel.feat.core.aggregator.AggregatorSimpleRoute;
+
 
 
 /**
@@ -23,9 +24,10 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() {
-        return new AggregatorTimeoutThreadPoolRoute();
+        return new AggregatorSimpleRoute();
+        // AggregatorTimeoutThreadPoolRoute();
         // AggregatorABCPojoRoute();
-        //AggregatorABCLevelDBRoute();
+        // AggregatorABCLevelDBRoute();
         // AggregateABCRecoveryRoute();
         // AggregateInvalidRoute();
         // AggregateGroupRoute();
@@ -235,6 +237,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testXMLWithThreadPool() throws InterruptedException {
 
         MockEndpoint mock = super.getMockEndpoint("mock:result");
@@ -253,4 +256,14 @@ public class EntryPoint extends CamelTestSupport {
     }
 
 
+    @Test
+    public void testAggregation() {
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+
+        mockOut.setExpectedMessageCount(2);
+
+        assertMockEndpointsSatisfied();
+
+    }
 }

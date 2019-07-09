@@ -10,7 +10,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * @author
  */
-public class SplitterAggregateABCRouter extends RouteBuilder {
+public class SplitterAggregateABCRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {

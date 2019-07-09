@@ -8,7 +8,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * 
  */
-public class SplitterBeanRouter extends RouteBuilder {
+public class SplitterBeanRoute extends RouteBuilder {
 
 
     @Override

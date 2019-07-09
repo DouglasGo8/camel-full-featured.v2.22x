@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitStopOnExceptionRouter;
+import com.douglasdb.camel.feat.core.splitter.SplitStopOnExceptionRoute;
 
 import org.apache.camel.CamelExchangeException;
 import org.apache.camel.CamelExecutionException;
@@ -23,11 +23,11 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitStopOnExceptionRouter();
-        // SplitterBeanRouter();
-        // new SplitAggregateExceptionABCRouter();
-        // SplitterAggregateABCRouter();
-        // SplitterABCRouter();
+        return new SplitStopOnExceptionRoute();
+        // SplitterBeanRoute();
+        // SplitAggregateExceptionABCRoute();
+        // SplitterAggregateABCRoute();
+        // SplitterABCRoute();
     }
 
     @Test

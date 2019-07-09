@@ -9,7 +9,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * 
  */
-public class SplitStopOnExceptionRouter extends RouteBuilder {
+public class SplitStopOnExceptionRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
