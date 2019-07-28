@@ -254,16 +254,5 @@ public class EntryPoint extends CamelTestSupport {
 
 
     }
-
-
-    @Test
-    public void testAggregation() {
-
-        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
-
-        mockOut.setExpectedMessageCount(2);
-
-        assertMockEndpointsSatisfied();
-
-    }
+    
 }
