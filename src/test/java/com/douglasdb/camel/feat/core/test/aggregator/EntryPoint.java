@@ -1,9 +1,7 @@
 package com.douglasdb.camel.feat.core.test.aggregator;
 
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.douglasdb.camel.feat.core.aggregator.AggregateDynamicCompletionSizeRoute;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
@@ -13,8 +11,8 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.douglasdb.camel.feat.core.aggregator.AggregatorSimpleRoute;
-
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -24,7 +22,9 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() {
-        return new AggregatorSimpleRoute();
+        return new AggregateDynamicCompletionSizeRoute();
+        // AggregateCompletionConditionRoute();
+        // AggregatorSimpleRoute();
         // AggregatorTimeoutThreadPoolRoute();
         // AggregatorABCPojoRoute();
         // AggregatorABCLevelDBRoute();
@@ -240,19 +240,88 @@ public class EntryPoint extends CamelTestSupport {
     @Ignore
     public void testXMLWithThreadPool() throws InterruptedException {
 
-        MockEndpoint mock = super.getMockEndpoint("mock:result");
+        final MockEndpoint mock = super.getMockEndpoint("mock:result");
 
         mock.setExpectedMessageCount(2);
 
 
-        super.template.sendBody("direct:start", "<order name=\"motor\" amount=\"1000\" customer=\"honda\"/>");
-        super.template.sendBody("direct:start", "<order name=\"motor\" amount=\"500\" customer=\"toyota\"/>");
-        super.template.sendBody("direct:start", "<order name=\"gearbox\" amount=\"200\" customer=\"toyota\"/>");
-
+        super.template.sendBody("direct:start",
+                "<order name=\"motor\" amount=\"1000\" customer=\"honda\"/>");
+        super.template.sendBody("direct:start",
+                "<order name=\"motor\" amount=\"500\" customer=\"toyota\"/>");
+        super.template.sendBody("direct:start",
+                "<order name=\"gearbox\" amount=\"200\" customer=\"toyota\"/>");
 
         assertMockEndpointsSatisfied();
 
-
     }
-    
+
+    @Test
+    @Ignore
+    public void testAggregationCompletionCondition() throws InterruptedException {
+
+        final MockEndpoint mock = super.getMockEndpoint("mock:out");
+
+        mock.setExpectedMessageCount(2);
+
+        super.template.sendBodyAndHeader("direct:in", "One", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Two", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Three", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Four", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Five", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Six", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Seven", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Eight", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Nine", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Ten", "group", "even");
+
+        assertMockEndpointsSatisfied();
+
+        List<Exchange> receivedExchanges = mock.getReceivedExchanges();
+        @SuppressWarnings("unchecked")
+        Set<String> odd = Collections.checkedSet(receivedExchanges.get(0).getIn().getBody(Set.class), String.class);
+        assertTrue((odd.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine"))));
+
+        @SuppressWarnings("unchecked")
+        Set<String> even = Collections.checkedSet(receivedExchanges.get(1).getIn().getBody(Set.class), String.class);
+        assertTrue(even.containsAll(Arrays.asList("Two", "Four", "Six", "Eight", "Ten")));
+    }
+
+    @Test
+    public void testAggregationCompletionSize() throws InterruptedException {
+        final MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.setExpectedMessageCount(2);
+
+        Map<String, Object> oddHeaders = new HashMap<String, Object>();
+        oddHeaders.put("group", "odd");
+        oddHeaders.put("batchSize", "5");
+
+        Map<String, Object> evenHeaders = new HashMap<String, Object>();
+        evenHeaders.put("group", "even");
+        evenHeaders.put("batchSize", "4");
+
+        super.template.sendBodyAndHeaders("direct:in", "One", oddHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Two", evenHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Three", oddHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Four", evenHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Five", oddHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Six", evenHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Seven", oddHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Eight", evenHeaders);
+        super.template.sendBodyAndHeaders("direct:in", "Nine", oddHeaders);
+
+        assertMockEndpointsSatisfied();
+
+        List<Exchange> receivedExchanges = mock.getReceivedExchanges();
+        @SuppressWarnings("unchecked")
+        Set<String> even = Collections.checkedSet(receivedExchanges.get(0).getIn().getBody(Set.class), String.class);
+        assertTrue(even.containsAll(Arrays.asList("Two", "Four", "Six", "Eight")));
+
+        @SuppressWarnings("unchecked")
+        Set<String> odd = Collections.checkedSet(receivedExchanges.get(1).getIn().getBody(Set.class), String.class);
+        assertTrue(odd.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine")));
+    }
+
+
+
 }
