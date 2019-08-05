@@ -1,7 +1,6 @@
 package com.douglasdb.camel.feat.core.test.aggregator;
 
-
-import com.douglasdb.camel.feat.core.aggregator.AggregateDynamicCompletionSizeRoute;
+import com.douglasdb.camel.feat.core.aggregator.AggregateSimpleRoute;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
@@ -16,13 +15,14 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * @author DouglasDb
+ * @author dbatista
  */
 public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() {
-        return new AggregateDynamicCompletionSizeRoute();
+        return new AggregateSimpleRoute();
+        // AggregateDynamicCompletionSizeRoute();
         // AggregateCompletionConditionRoute();
         // AggregatorSimpleRoute();
         // AggregatorTimeoutThreadPoolRoute();
@@ -288,6 +288,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testAggregationCompletionSize() throws InterruptedException {
         final MockEndpoint mock = super.getMockEndpoint("mock:out");
         mock.setExpectedMessageCount(2);
@@ -322,6 +323,41 @@ public class EntryPoint extends CamelTestSupport {
         assertTrue(odd.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine")));
     }
 
+    /**
+     *
+     * @throws InterruptedException for assertMockEndpointsSatisfied
+     */
+    @Test
+    public void testAggregationSimple() throws InterruptedException {
+        final MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.setExpectedMessageCount(2);
+
+        super.template.sendBodyAndHeader("direct:in", "One", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Two", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Three", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Four", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Five", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Six", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Seven", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Eight", "group", "even");
+        super.template.sendBodyAndHeader("direct:in", "Nine", "group", "odd");
+        super.template.sendBodyAndHeader("direct:in", "Ten", "group", "even");
+
+        assertMockEndpointsSatisfied();
+
+        final List<Exchange> receivedExchanges = mock.getReceivedExchanges();
+
+        @SuppressWarnings("unchecked")
+        final Set<String> odd = Collections.checkedSet(receivedExchanges.get(0).getIn().getBody(Set.class),
+                String.class);
+        assertTrue((odd.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine"))));
+
+        @SuppressWarnings("unchecked")
+        final Set<String> even = Collections.checkedSet(receivedExchanges.get(1).getIn().getBody(Set.class),
+                String.class);
+        assertTrue(even.containsAll(Arrays.asList("Two", "Four", "Six", "Eight", "Ten")));
+
+    }
 
 
 }
