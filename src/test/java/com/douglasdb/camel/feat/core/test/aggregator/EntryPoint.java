@@ -41,6 +41,8 @@ public class EntryPoint extends CamelTestSupport {
     public void setUp() throws Exception {
         deleteDirectory("data");
         super.setUp();
+
+        String json = "";
     }
 
     @Test
