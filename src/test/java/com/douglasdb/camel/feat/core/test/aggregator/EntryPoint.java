@@ -1,8 +1,9 @@
 package com.douglasdb.camel.feat.core.test.aggregator;
 
-import com.douglasdb.camel.feat.core.aggregator.AggregateSimpleRoute;
+import com.douglasdb.camel.feat.core.aggregator.AggregateCompletionTimeoutRoute;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.processor.aggregate.ClosedCorrelationKeyException;
@@ -21,7 +22,11 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() {
-        return new AggregateSimpleRoute();
+        return new AggregateCompletionTimeoutRoute();
+        // AggregateParallelProcessingRoute();
+        // AggregateExecutorServiceRoute();
+        // AggregateCompletionIntervalRoute();
+        // AggregateSimpleRoute();
         // AggregateDynamicCompletionSizeRoute();
         // AggregateCompletionConditionRoute();
         // AggregatorSimpleRoute();
@@ -41,8 +46,6 @@ public class EntryPoint extends CamelTestSupport {
     public void setUp() throws Exception {
         deleteDirectory("data");
         super.setUp();
-
-        String json = "";
     }
 
     @Test
@@ -326,10 +329,10 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     /**
-     *
      * @throws InterruptedException for assertMockEndpointsSatisfied
      */
     @Test
+    @Ignore
     public void testAggregationSimple() throws InterruptedException {
         final MockEndpoint mock = super.getMockEndpoint("mock:out");
         mock.setExpectedMessageCount(2);
@@ -349,15 +352,162 @@ public class EntryPoint extends CamelTestSupport {
 
         final List<Exchange> receivedExchanges = mock.getReceivedExchanges();
 
-        @SuppressWarnings("unchecked")
-        final Set<String> odd = Collections.checkedSet(receivedExchanges.get(0).getIn().getBody(Set.class),
+        @SuppressWarnings("unchecked") final Set<String> odd = Collections.checkedSet(receivedExchanges.get(0).getIn().getBody(Set.class),
                 String.class);
         assertTrue((odd.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine"))));
 
-        @SuppressWarnings("unchecked")
-        final Set<String> even = Collections.checkedSet(receivedExchanges.get(1).getIn().getBody(Set.class),
+        @SuppressWarnings("unchecked") final Set<String> even = Collections.checkedSet(receivedExchanges.get(1).getIn().getBody(Set.class),
                 String.class);
         assertTrue(even.containsAll(Arrays.asList("Two", "Four", "Six", "Eight", "Ten")));
+
+    }
+
+    /**
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testAggregationWithInterval() throws InterruptedException {
+        final MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.setMinimumExpectedMessageCount(6);
+
+        boolean isOdd = true;
+        final List<String> numbers = Arrays.asList("One", "Two", "Three", "Four", "Five",
+                "Six", "Seven", "Eight", "Nine", "Ten");
+
+        for (final String num : numbers) {
+            try {
+                super.template.sendBodyAndHeader("direct:in", num, "group", (isOdd) ? "odd" : "even");
+                isOdd = !isOdd;
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ;
+            }
+        }
+        assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    @Ignore
+    public void testAggregateExecutorService() throws InterruptedException {
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(2);
+
+        template.sendBodyAndHeader("direct:in", "One", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Two", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Three", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Four", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Five", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Six", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Seven", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Eight", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Nine", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Ten", "group", "even");
+
+        assertMockEndpointsSatisfied();
+
+        final List<Exchange> receivedExchanges = mockOut.getReceivedExchanges();
+        final Message message1 = receivedExchanges.get(0).getIn();
+        final Message message2 = receivedExchanges.get(1).getIn();
+
+        log.info("exchange(0).header.group = {}", message1.getHeader("group"));
+        log.info("exchange(0).property.CamelAggregatedCompletedBy = {}", message1.getExchange().getProperty("CamelAggregatedCompletedBy"));
+        log.info("exchange(1).header.group = {}", message2.getHeader("group"));
+        log.info("exchange(1).property.CamelAggregatedCompletedBy = {}", message2.getExchange().getProperty("CamelAggregatedCompletedBy"));
+
+        final List<String> odd = Arrays.asList("One", "Three", "Five", "Seven", "Nine");
+        final List<String> even = Arrays.asList("Two", "Four", "Six", "Eight", "Ten");
+
+        @SuppressWarnings("unchecked")
+        final Set<String> set1 = Collections.checkedSet(message1.getBody(Set.class), String.class);
+        @SuppressWarnings("unchecked")
+        final Set<String> set2 = Collections.checkedSet(message2.getBody(Set.class), String.class);
+
+        if ("odd".equals(message1.getHeader("group"))) {
+            assertTrue(set1.containsAll(odd));
+            assertTrue(set2.containsAll(even));
+        } else {
+            assertTrue(set1.containsAll(even));
+            assertTrue(set2.containsAll(odd));
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testAggregateParallelProcessing() throws InterruptedException {
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(2);
+
+        template.sendBodyAndHeader("direct:in", "One", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Two", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Three", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Four", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Five", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Six", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Seven", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Eight", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Nine", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Ten", "group", "even");
+
+        assertMockEndpointsSatisfied();
+
+        final List<Exchange> receivedExchanges = mockOut.getReceivedExchanges();
+        final Message message1 = receivedExchanges.get(0).getIn();
+        final Message message2 = receivedExchanges.get(1).getIn();
+
+        log.info("exchange(0).header.group = {}", message1.getHeader("group"));
+        log.info("exchange(0).property.CamelAggregatedCompletedBy = {}", message1.getExchange().getProperty("CamelAggregatedCompletedBy"));
+        log.info("exchange(1).header.group = {}", message2.getHeader("group"));
+        log.info("exchange(1).property.CamelAggregatedCompletedBy = {}", message2.getExchange().getProperty("CamelAggregatedCompletedBy"));
+
+        final List<String> odd = Arrays.asList("One", "Three", "Five", "Seven", "Nine");
+        final List<String> even = Arrays.asList("Two", "Four", "Six", "Eight", "Ten");
+
+        @SuppressWarnings("unchecked")
+        final Set<String> set1 = Collections.checkedSet(message1.getBody(Set.class), String.class);
+        @SuppressWarnings("unchecked")
+        final Set<String> set2 = Collections.checkedSet(message2.getBody(Set.class), String.class);
+
+        if ("odd".equals(message1.getHeader("group"))) {
+            assertTrue(set1.containsAll(odd));
+            assertTrue(set2.containsAll(even));
+        } else {
+            assertTrue(set1.containsAll(even));
+            assertTrue(set2.containsAll(odd));
+        }
+    }
+
+    @Test
+    public void testAggregateCompletionTimeout() throws InterruptedException {
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(2);
+
+        template.sendBodyAndHeader("direct:in", "One", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Two", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Three", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Four", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Five", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Six", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Seven", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Eight", "group", "even");
+        template.sendBodyAndHeader("direct:in", "Nine", "group", "odd");
+        template.sendBodyAndHeader("direct:in", "Ten", "group", "even");
+
+        assertMockEndpointsSatisfied();
+
+        for (Exchange exchange : mockOut.getReceivedExchanges()) {
+            @SuppressWarnings("unchecked")
+            Set<String> set = Collections.checkedSet(exchange.getIn().getBody(Set.class), String.class);
+            if (set.contains("One")) { // odd
+                assertTrue(set.containsAll(Arrays.asList("One", "Three", "Five", "Seven", "Nine")));
+            } else { // even
+                assertTrue(set.containsAll(Arrays.asList("Two", "Four", "Six", "Eight", "Ten")));
+            }
+        }
 
     }
 
