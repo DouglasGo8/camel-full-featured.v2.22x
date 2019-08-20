@@ -1,29 +1,31 @@
 
 package com.douglasdb.camel.feat.core.test.splitter;
 
-import java.util.Arrays;
-
+import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitStopOnExceptionRoute;
-
+import com.douglasdb.camel.feat.core.splitter.SplitNaturalRoute;
+import com.douglasdb.camel.feat.core.splitter.SplitSimpleExpressionRoute;
 import org.apache.camel.CamelExchangeException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.*;
+
 /**
- * 
+ *
  */
 public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitStopOnExceptionRoute();
+        return new SplitNaturalRoute();
+        // SplitSimpleExpressionRoute();
+        // SplitStopOnExceptionRoute();
         // SplitterBeanRoute();
         // SplitAggregateExceptionABCRoute();
         // SplitterAggregateABCRoute();
@@ -91,6 +93,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitStopOnException() throws Exception {
 
         MockEndpoint split = super.getMockEndpoint("mock:split");
@@ -118,4 +121,77 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
+    @Test
+    @Ignore
+    public void testSplitSimpleExpression() throws InterruptedException {
+
+        MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.setExpectedMessageCount(3);
+        mock.expectedBodiesReceived("one", "two", "three");
+
+        ListWrapper wrapper = new ListWrapper();
+        wrapper.setWrapped(Arrays.asList("one", "two", "three"));
+        super.template.sendBody("direct:in", wrapper);
+
+        assertMockEndpointsSatisfied();
+
+    }
+
+    @Test
+    public void testSplitNaturalArray() throws InterruptedException {
+        String[] array = new String[]{"one", "two", "three"};
+        MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
+
+        mockSplit.expectedMessageCount(3);
+        mockSplit.expectedBodiesReceived("one", "two", "three");
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(1);
+        mockOut.message(0).body().isEqualTo(array);
+
+        super.template.sendBody("direct:in", array);
+
+        assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    public void testSplitNaturalList() throws InterruptedException {
+        List<String> list = Arrays.asList("one", "two", "three");
+        MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
+
+        mockSplit.expectedMessageCount(3);
+        mockSplit.expectedBodiesReceived("one", "two", "three");
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(1);
+        mockOut.message(0).body().isEqualTo(list);
+
+        super.template.sendBody("direct:in", list);
+
+        assertMockEndpointsSatisfied();
+    }
+
+
+    @Test
+    public void testSplitNaturalIterable() throws InterruptedException {
+        Set<String> set = new TreeSet<>();
+        set.add("one");
+        set.add("two");
+        set.add("three");
+        Iterator<String> iterator = set.iterator();
+        MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
+
+        mockSplit.expectedMessageCount(3);
+        mockSplit.expectedBodiesReceivedInAnyOrder("one", "two", "three");
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(1);
+        mockOut.message(0).body().isEqualTo(iterator);
+
+        super.template.sendBody("direct:in", iterator);
+
+        assertMockEndpointsSatisfied();
+    }
+
+    // testSplitMultiLine
 }
