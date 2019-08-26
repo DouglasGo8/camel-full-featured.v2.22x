@@ -4,8 +4,7 @@ package com.douglasdb.camel.feat.core.test.splitter;
 import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitNaturalRoute;
-import com.douglasdb.camel.feat.core.splitter.SplitSimpleExpressionRoute;
+import com.douglasdb.camel.feat.core.splitter.SplitExceptionHandlingStopOnExceptionRoute;
 import org.apache.camel.CamelExchangeException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.RoutesBuilder;
@@ -23,7 +22,10 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitNaturalRoute();
+        return new SplitExceptionHandlingStopOnExceptionRoute();
+        // SplitExceptionHandlingRoute();
+        // SplitMultiLineRoute();
+        // SplitNaturalRoute();
         // SplitSimpleExpressionRoute();
         // SplitStopOnExceptionRoute();
         // SplitterBeanRoute();
@@ -138,6 +140,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitNaturalArray() throws InterruptedException {
         String[] array = new String[]{"one", "two", "three"};
         MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
@@ -155,6 +158,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitNaturalList() throws InterruptedException {
         List<String> list = Arrays.asList("one", "two", "three");
         MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
@@ -173,7 +177,9 @@ public class EntryPoint extends CamelTestSupport {
 
 
     @Test
+    @Ignore
     public void testSplitNaturalIterable() throws InterruptedException {
+
         Set<String> set = new TreeSet<>();
         set.add("one");
         set.add("two");
@@ -193,5 +199,62 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
-    // testSplitMultiLine
+    @Test
+    @Ignore
+    public void testSplitMultiLineString() throws InterruptedException {
+        MockEndpoint mock = super.getMockEndpoint("mock:out");
+
+        mock.expectedBodiesReceived("this is a", "multi-line", "piece of text");
+
+        final String multiLineString = "this is a\nmulti-line\npiece of text";
+
+        super.template.sendBody("direct:in", multiLineString);
+
+        assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    @Ignore
+    public void testRemainderElementsProcessedOnException() throws InterruptedException {
+        String[] array = new String[]{"one", "two", "three"};
+
+        MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
+        mockSplit.expectedMessageCount(2);
+        mockSplit.expectedBodiesReceived("two", "three");
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(0);
+
+        try {
+            super.template.sendBody("direct:in", array);
+            fail("Exception not thrown");
+        } catch (CamelExecutionException ex) {
+            assertTrue(ex.getCause() instanceof IllegalStateException);
+            assertMockEndpointsSatisfied();
+        }
+    }
+
+
+    @Test
+    public void testNoElementsProcessedAfterException() throws InterruptedException {
+
+        final String[] array = new String[]{"one", "two", "three"};
+
+        MockEndpoint mockSplit = super.getMockEndpoint("mock:split");
+        mockSplit.expectedMessageCount(1);
+        mockSplit.expectedBodiesReceived("one");
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(0);
+
+        try {
+            super.template.sendBody("direct:in", array);
+            fail("Exception not thrown");
+        } catch (CamelExecutionException ex) {
+            assertTrue(ex.getCause() instanceof CamelExchangeException);
+            log.info(ex.getMessage());
+            assertMockEndpointsSatisfied();
+        }
+    }
+
 }
