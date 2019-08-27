@@ -4,9 +4,10 @@ package com.douglasdb.camel.feat.core.test.splitter;
 import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitExceptionHandlingStopOnExceptionRoute;
+import com.douglasdb.camel.feat.core.splitter.SplitParallelProcessingTimeoutRoute;
 import org.apache.camel.CamelExchangeException;
 import org.apache.camel.CamelExecutionException;
+import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -22,7 +23,13 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitExceptionHandlingStopOnExceptionRoute();
+        return new SplitParallelProcessingTimeoutRoute();
+        // SplitParallelProcessingRoute();
+        // SplitParallelProcessingExceptionHandlingRoute();
+        // SplitExecutorServiceRoute();
+        // SplitAggregateExceptionHandlingRoute();
+        // SplitAggregateRoute();
+        // SplitExceptionHandlingStopOnExceptionRoute();
         // SplitExceptionHandlingRoute();
         // SplitMultiLineRoute();
         // SplitNaturalRoute();
@@ -64,6 +71,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitAggregateExceptionABC() throws Exception {
 
         MockEndpoint split = getMockEndpoint("mock:split");
@@ -80,6 +88,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitBean() throws Exception {
 
         MockEndpoint mock = super.getMockEndpoint("mock:split");
@@ -175,7 +184,6 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
-
     @Test
     @Ignore
     public void testSplitNaturalIterable() throws InterruptedException {
@@ -234,8 +242,8 @@ public class EntryPoint extends CamelTestSupport {
         }
     }
 
-
     @Test
+    @Ignore
     public void testNoElementsProcessedAfterException() throws InterruptedException {
 
         final String[] array = new String[]{"one", "two", "three"};
@@ -257,4 +265,144 @@ public class EntryPoint extends CamelTestSupport {
         }
     }
 
+    @Test
+    @Ignore
+    public void testSplitAggregatesResponses() throws InterruptedException {
+
+        String[] array = new String[]{"one", "two", "three"};
+        MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.expectedMessageCount(1);
+
+        super.template.sendBody("direct:in", array);
+
+        assertMockEndpointsSatisfied();
+
+        Exchange exchange = mock.getReceivedExchanges().get(0);
+        @SuppressWarnings("unchecked")
+        Set<String> backendResponses = Collections.checkedSet(exchange.getIn().getBody(Set.class), String.class);
+        assertTrue(backendResponses.containsAll(Arrays.asList("Processed: one", "Processed: two", "Processed: three")));
+    }
+
+    @Test
+    @Ignore
+    public void testHandlesException() throws InterruptedException {
+        String[] array = new String[]{"one", "two", "three"};
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(1);
+
+        template.sendBody("direct:in", array);
+
+        assertMockEndpointsSatisfied();
+        Exchange exchange = mockOut.getReceivedExchanges().get(0);
+        @SuppressWarnings("unchecked")
+        Set<String> backendResponses = Collections.checkedSet(exchange.getIn().getBody(Set.class), String.class);
+        assertTrue(backendResponses.containsAll(Arrays.asList("Processed: one", "Failed: two", "Processed: three")));
+    }
+
+    @Test
+    @Ignore
+    public void testSplittingInParallel() throws InterruptedException {
+
+        final List<String> messageFragments = new ArrayList<>();
+        final int fragmentCount = 50;
+
+        for (int i = 0; i < 50; i++)
+            messageFragments.add("fragment" + i);
+
+        System.out.println(messageFragments);
+
+        MockEndpoint mockSplit = getMockEndpoint("mock:split");
+        mockSplit.setExpectedMessageCount(fragmentCount);
+        mockSplit.expectedBodiesReceivedInAnyOrder(messageFragments);
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(1);
+        mockOut.message(0).body().isEqualTo(messageFragments);
+
+        template.sendBody("direct:in", messageFragments);
+
+        assertMockEndpointsSatisfied();
+
+    }
+
+    @Test
+    @Ignore
+    public void testSplittingInParallelWithException() throws InterruptedException {
+
+        final List<String> messageFragments = new ArrayList<>();
+        final int fragmentCount = 50;
+
+        for (int i = 0; i < 50; i++)
+            messageFragments.add("fragment" + i);
+
+        //System.out.println(messageFragments);
+
+        int indexOnWhichExceptionThrown = 20;
+        MockEndpoint mockSplit = getMockEndpoint("mock:split");
+        mockSplit.setMinimumExpectedMessageCount(indexOnWhichExceptionThrown);
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(0);
+
+        try {
+            template.sendBody("direct:in", messageFragments);
+            fail();
+        } catch (Exception e) {
+            assertMockEndpointsSatisfied();
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testSplittingInParallelBasic() throws InterruptedException {
+
+        List<String> messageFragments = new ArrayList<String>();
+        int fragmentCount = 50;
+
+        for (int i = 0; i < fragmentCount; i++) {
+            messageFragments.add("fragment" + i);
+        }
+        MockEndpoint mockSplit = getMockEndpoint("mock:split");
+        mockSplit.setExpectedMessageCount(fragmentCount);
+        mockSplit.expectedBodiesReceivedInAnyOrder(messageFragments);
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(1);
+        mockOut.message(0).body().isEqualTo(messageFragments);
+
+        template.sendBody("direct:in", messageFragments);
+
+        assertMockEndpointsSatisfied();
+
+    }
+
+
+    @Test
+    public void testSplittingInParallelWithTimeout() throws InterruptedException {
+
+        final int fragmentCount = 50;
+        final List<String> messageFragments = new ArrayList<String>();
+
+        for (int i = 0; i < fragmentCount; i++) {
+            messageFragments.add("fragment" + i);
+        }
+
+        MockEndpoint mockSplit = getMockEndpoint("mock:split");
+        mockSplit.setExpectedMessageCount(fragmentCount -1); // 49
+
+        ArrayList<String> expectedFragments = new ArrayList<String>(messageFragments);
+        int indexDelayed = 20;
+
+        expectedFragments.remove(indexDelayed); // removes 20th element
+        mockSplit.expectedBodiesReceivedInAnyOrder(expectedFragments);
+
+        // System.out.println(expectedFragments);
+
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.setExpectedMessageCount(1);
+
+        template.sendBody("direct:in", messageFragments);
+        assertMockEndpointsSatisfied();
+    }
 }
