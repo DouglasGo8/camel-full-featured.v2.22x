@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<books>
+    <book category="Tech" title="Apache Camel Developer's Cookbook">
+        <authors>
+            <author>Scott Cranton</author>
+            <author>Jakub Korab</author>
+        </authors>
+        <description>A rip-roaring guide through the heady world of systems integration</description>
+    </book>
+    <book category="Cooking" title="Camel Cookbook">
+        <authors>
+            <author>Heston Ramsey</author>
+            <author>Gordon Blumenthal</author>
+        </authors>
+        <description>A culinary journey into the desert's most delicious beast of burden</description>
+    </book>
+    <book category="Cooking" title="Double decadence with extra cream">
+        <authors>
+            <author>Vrolok</author>
+            <author>Beatrik</author>
+        </authors>
+        <description>Satanic Black metal Propaganda (part XII)</description>
+    </book>
+    <book category="Cooking" title="Cooking with Butter">
+        <authors>
+            <author>Angantyr</author>
+            <author>Behexen</author>
+        </authors>
+        <description>Satanic Black metal Propaganda (part XIII)</description>
+    </book>
+</books>

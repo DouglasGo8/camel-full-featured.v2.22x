@@ -4,16 +4,15 @@ package com.douglasdb.camel.feat.core.test.splitter;
 import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitParallelProcessingTimeoutRoute;
-import org.apache.camel.CamelExchangeException;
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.Exchange;
-import org.apache.camel.RoutesBuilder;
+import com.douglasdb.camel.feat.core.splitter.SplitReaggregateRoute;
+import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -23,7 +22,8 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitParallelProcessingTimeoutRoute();
+        return new SplitReaggregateRoute();
+        // SplitParallelProcessingTimeoutRoute();
         // SplitParallelProcessingRoute();
         // SplitParallelProcessingExceptionHandlingRoute();
         // SplitExecutorServiceRoute();
@@ -377,8 +377,8 @@ public class EntryPoint extends CamelTestSupport {
 
     }
 
-
     @Test
+    @Ignore
     public void testSplittingInParallelWithTimeout() throws InterruptedException {
 
         final int fragmentCount = 50;
@@ -389,7 +389,7 @@ public class EntryPoint extends CamelTestSupport {
         }
 
         MockEndpoint mockSplit = getMockEndpoint("mock:split");
-        mockSplit.setExpectedMessageCount(fragmentCount -1); // 49
+        mockSplit.setExpectedMessageCount(fragmentCount - 1); // 49
 
         ArrayList<String> expectedFragments = new ArrayList<String>(messageFragments);
         int indexDelayed = 20;
@@ -404,5 +404,69 @@ public class EntryPoint extends CamelTestSupport {
 
         template.sendBody("direct:in", messageFragments);
         assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    @Ignore
+    public void testSplitAggregatesResponsesWithXml() throws Exception {
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+
+        mockOut.expectedMessageCount(2);
+
+        final String fileName = "./src/main/resources/META-INF/bookstore/books.xml";
+
+        assertFileExists(fileName);
+
+        super.template.sendBody("direct:in",
+                new FileInputStream(fileName));
+
+
+        assertMockEndpointsSatisfied();
+        List<Exchange> receivedExchanges = mockOut.getReceivedExchanges();
+        assertBooksByCategory(receivedExchanges.get(0));
+        assertBooksByCategory(receivedExchanges.get(1));
+    }
+
+    @Test
+    public void testSplitAggregatesResponsesCombined() throws Exception {
+        MockEndpoint mockOut = getMockEndpoint("mock:out");
+        mockOut.expectedMessageCount(2);
+
+        final String fileName = "./src/main/resources/META-INF/bookstore/books.xml";
+
+        assertFileExists(fileName);
+
+        super.template.sendBody("direct:in",
+                new FileInputStream(fileName));
+
+        assertMockEndpointsSatisfied();
+
+        List<Exchange> receivedExchanges = mockOut.getReceivedExchanges();
+        assertBooksByCategory(receivedExchanges.get(0));
+        assertBooksByCategory(receivedExchanges.get(1));
+    }
+
+    // Split By Xml
+
+
+    private void assertBooksByCategory(Exchange exchange) {
+        Message in = exchange.getIn();
+        @SuppressWarnings("unchecked")
+        Set<String> books = Collections.checkedSet(in.getBody(Set.class), String.class);
+        String category = in.getHeader("category", String.class);
+
+        switch (category) {
+            case "Tech":
+                assertTrue(books.containsAll(Collections.singletonList("Apache Camel Developer's Cookbook")));
+                break;
+            case "Cooking":
+                assertTrue(books.containsAll(Arrays.asList("Camel Cookbook",
+                        "Double decadence with extra cream", "Cooking with Butter")));
+                break;
+            default:
+                fail();
+                break;
+        }
     }
 }
