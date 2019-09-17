@@ -25,7 +25,6 @@ public class SplitReaggregateRoute extends RouteBuilder {
                 .to("mock:out")
                 .end();
 
-
         from("direct:combined")
                 .split(xpath("/books/book"))
                 .setHeader("category", xpath("/book/@category").stringResult())

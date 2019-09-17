@@ -4,7 +4,7 @@ package com.douglasdb.camel.feat.core.test.splitter;
 import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitReaggregateRoute;
+import com.douglasdb.camel.feat.core.splitter.SplitXmlNamespaceRoute;
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -12,7 +12,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -22,7 +21,10 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitReaggregateRoute();
+        return new SplitXmlNamespaceRoute();
+        // SplitXmlNamespacesRoute();
+        // SplitXmlRoute();
+        // SplitReaggregateRoute();
         // SplitParallelProcessingTimeoutRoute();
         // SplitParallelProcessingRoute();
         // SplitParallelProcessingExceptionHandlingRoute();
@@ -429,6 +431,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testSplitAggregatesResponsesCombined() throws Exception {
         MockEndpoint mockOut = getMockEndpoint("mock:out");
         mockOut.expectedMessageCount(2);
@@ -447,7 +450,66 @@ public class EntryPoint extends CamelTestSupport {
         assertBooksByCategory(receivedExchanges.get(1));
     }
 
-    // Split By Xml
+    @Test
+    @Ignore
+    public void splitXmlTest() throws Exception {
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+
+        mockOut.expectedMessageCount(2);
+        mockOut.expectedBodiesReceived("Scott Cranton", "Jakub Korab");
+
+        final String fileName = "./src/main/resources/META-INF/bookstore/books.xml";
+
+        assertFileExists(fileName);
+        super.template.sendBody("direct:in",
+                new FileInputStream(fileName));
+
+        assertMockEndpointsSatisfied();
+
+
+    }
+
+    @Test
+    @Ignore
+    public void splitXmlWithNamespacesTest() throws Exception {
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+
+        mockOut.expectedMessageCount(2);
+        mockOut.expectedBodiesReceived("Scott Cranton", "Jakub Korab");
+
+        final String fileName = "./src/main/resources/META-INF/bookstore/books-ns.xml";
+
+        assertFileExists(fileName);
+
+        super.template.sendBody("direct:in",
+                new FileInputStream(fileName));
+
+        assertMockEndpointsSatisfied();
+
+
+    }
+
+    @Test
+    public void splitXmlWithNamespaceTest() throws Exception {
+
+        MockEndpoint mockOut = super.getMockEndpoint("mock:out");
+
+        mockOut.expectedMessageCount(2);
+        mockOut.expectedBodiesReceived("Scott Cranton", "Jakub Korab");
+
+        final String fileName = "./src/main/resources/META-INF/bookstore/books-ns.xml";
+
+        assertFileExists(fileName);
+
+        super.template.sendBody("direct:in",
+                new FileInputStream(fileName));
+
+        assertMockEndpointsSatisfied();
+
+
+    }
 
 
     private void assertBooksByCategory(Exchange exchange) {

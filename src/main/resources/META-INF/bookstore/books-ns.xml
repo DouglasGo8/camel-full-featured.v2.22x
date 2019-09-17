@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<c:books xmlns:c="http://camelcookbook.org/schema/books">
+    <c:book category="Tech" title="Apache Camel Developer's Cookbook">
+        <c:authors>
+            <c:author>Scott Cranton</c:author>
+            <c:author>Jakub Korab</c:author>
+        </c:authors>
+        <c:description>A rip-roaring guide through the heady world of systems integration</c:description>
+    </c:book>
+</c:books>
