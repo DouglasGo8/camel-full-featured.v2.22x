@@ -1,6 +1,3 @@
-Camel Java8 Router Project
-==========================
-
 To build this project use
 
     mvn install

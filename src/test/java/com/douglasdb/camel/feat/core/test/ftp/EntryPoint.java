@@ -14,44 +14,47 @@ import org.junit.Test;
  */
 public class EntryPoint extends CamelTestSupport {
 
-	/**
-	 *
-	 */
-	public EntryPoint() {
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     *
+     */
+    public EntryPoint() {
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * 
-	 */
-	@Override
-	protected CamelContext createCamelContext() throws Exception {
-		// TODO Auto-generated method stub
+    /**
+     *
+     */
+    @Override
+    protected CamelContext createCamelContext() throws Exception {
+        // TODO Auto-generated method stub
 
-		final CamelContext ctx = super.createCamelContext();
+        final CamelContext ctx = super.createCamelContext();
 
-		ctx.addComponent("acmq", JmsComponent.jmsComponentAutoAcknowledge(new ActiveMQConnectionFactory("tcp://localhost:61616")));
-		ctx.getComponent("properties", PropertiesComponent.class).setLocation("classpath:placeholder.properties");
+        ctx.addComponent("acmq",
+				JmsComponent.jmsComponentAutoAcknowledge(
+						new ActiveMQConnectionFactory("tcp://localhost:61616")));
 
-		return ctx;
-	}
+        ctx.getComponent("properties", PropertiesComponent.class).setLocation("classpath:placeholder.properties");
 
-	@Override
-	protected RoutesBuilder createRouteBuilder() throws Exception {
-		// TODO Auto-generated method stub
-		return new FtpToJmsRoute();
-	}
+        return ctx;
+    }
 
-	/**
-	 * @throws InterruptedException
-	 */
-	@Test
-	public void ftpToJMSWithDynamicToTest() throws InterruptedException {
+    @Override
+    protected RoutesBuilder createRouteBuilder() throws Exception {
+        // TODO Auto-generated method stub
+        return new FtpToJmsRoute();
+    }
 
-		super.getMockEndpoint("mock:out").setExpectedMessageCount(1);
+    /**
+     * @throws InterruptedException
+     */
+    @Test
+    public void ftpToJMSWithDynamicToTest() throws InterruptedException {
 
-		assertMockEndpointsSatisfied();
+        super.getMockEndpoint("mock:out").setExpectedMessageCount(1);
 
-	}
+        assertMockEndpointsSatisfied();
+
+    }
 
 }

@@ -113,6 +113,11 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-cdi</artifactId>
         </dependency>
+        <!-- stream -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-stream</artifactId>
+        </dependency>
         <!-- LevelDB Aggregator  -->
         <dependency>
             <groupId>org.apache.camel</groupId>

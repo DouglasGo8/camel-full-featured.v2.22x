@@ -1,7 +1,7 @@
 package com.douglasdb.camel.feat.core.test.multicast;
 
 
-import com.douglasdb.camel.feat.core.ftp.multicast.OrderWithParallelMulticastRoute;
+import com.douglasdb.camel.feat.core.multicast.OrderWithParallelMulticastRoute;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.CamelContext;
 import org.apache.camel.RoutesBuilder;

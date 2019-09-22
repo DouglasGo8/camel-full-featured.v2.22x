@@ -26,7 +26,7 @@ public class FtpToJmsRoute extends RouteBuilder {
 	public void configure() throws Exception {
 		// TODO Auto-generated method stub
 		
-		from("ftp://192.168.1.39:2121?username=guest&password=welcome1&noop=true")
+		from("ftp://localhost:2121?username=guest&password=welcome1&noop=true")
 			// .log("${header.CamelFileName}")
 			.process((exchange) -> {
 				log.info("We just downloaded: " + exchange.getIn().getHeader("CamelFileName"));
