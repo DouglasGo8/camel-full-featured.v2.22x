@@ -12,6 +12,7 @@
                http://camel.apache.org/schema/spring
                http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+    <bean id="ftpServer" class="com.douglasdb.camel.feat.core.ftp.FtpServerBean"/>
     <camel:camelContext>
         <camel:route>
             <camel:from uri="stream:in?promptMessage=Enter Something"/>

@@ -14,5 +14,8 @@ public class EntryPointSpring extends CamelSpringTestSupport {
         return new ClassPathXmlApplicationContext("/META-INF/spring/ftp/app-context.xml");
     }
 
-    
+
+
+
+
 }
