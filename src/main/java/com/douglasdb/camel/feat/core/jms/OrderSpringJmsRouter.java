@@ -1,17 +1,20 @@
-package com.douglasdb.camel.feat.core.file;
+package com.douglasdb.camel.feat.core.jms;
 
 import org.apache.camel.builder.RouteBuilder;
 
 /**
- * @author dbatista
+ *
  */
-public class FilePrinterRouter extends RouteBuilder {
+public class OrderSpringJmsRouter extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
 
         from("file://F:/.camel/data/inbox?noop=true")
-                .to("stream:out")
+                .log("${header.CamelFileName}")
                 .to("mock:end");
+
+
+
     }
 }

@@ -22,7 +22,6 @@ public class EntryPoint extends CamelTestSupport {
 
         super.getMockEndpoint("mock:end").expectedMessageCount(1);
 
-        assertMockEndpointsSatisfied();
 
     }
 
