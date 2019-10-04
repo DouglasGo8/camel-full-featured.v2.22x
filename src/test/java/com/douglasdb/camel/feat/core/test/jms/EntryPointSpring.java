@@ -35,7 +35,8 @@ public class EntryPointSpring extends CamelSpringTestSupport {
     @Test
     public void testSendFileContentToJms() throws InterruptedException {
 
-        super.getMockEndpoint("mock:end").expectedMessageCount(1);
+        super.getMockEndpoint("mock:xml").expectedMessageCount(1);
+        super.getMockEndpoint("mock:csv").expectedMessageCount(1);
 
         assertMockEndpointsSatisfied();
     }
