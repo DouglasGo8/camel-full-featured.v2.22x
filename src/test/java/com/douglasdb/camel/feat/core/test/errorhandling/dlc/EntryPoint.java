@@ -1,9 +1,11 @@
 package com.douglasdb.camel.feat.core.test.errorhandling.dlc;
 
 import com.douglasdb.camel.feat.core.errorhandling.dlc.DlcRoute;
+import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EntryPoint extends CamelTestSupport {
@@ -14,14 +16,73 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testDlq() throws InterruptedException {
 
-        final MockEndpoint mock = super.getMockEndpoint("mock:result");
-        mock.expectedMessageCount(1);
+        final MockEndpoint mockSuccess = super.getMockEndpoint("mock:result");
+        mockSuccess.expectedMessageCount(1);
+        mockSuccess.expectedBodiesReceived("Foo");
+        mockSuccess.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNull();
+        mockSuccess.message(0).header("myHeader").isEqualTo("changed");
+
+        final MockEndpoint mockError = super.getMockEndpoint("mock:error");
+
+        mockError.expectedMessageCount(1);
+        mockError.expectedBodiesReceived("KaBoom");
+        mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
+        mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myDlcRoute");
+        mockError.message(0).header("myHeader").isEqualTo("changed");
 
         super.template.sendBodyAndHeader("direct:start", "Foo", "myHeader", "original");
 
+        super.template.sendBodyAndHeader("direct:start", "KaBoom", "myHeader", "original");
+
         assertMockEndpointsSatisfied();
+
+    }
+
+
+    @Test
+    public void testDlqMultistep() throws InterruptedException {
+
+        final MockEndpoint mockResult = getMockEndpoint("mock:result");
+        mockResult.expectedMessageCount(1);
+        mockResult.expectedBodiesReceived("Foo");
+        mockResult.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNull();
+        mockResult.message(0).header("myHeader").isEqualTo("changed");
+
+        final MockEndpoint mockError = getMockEndpoint("mock:error");
+        mockError.expectedMessageCount(1);
+        mockError.expectedBodiesReceived("KaBoom");
+        mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
+        mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myFlakyRoute");
+        mockError.message(0).header("myHeader").isEqualTo("flaky");
+
+        super.template.sendBodyAndHeader("direct:multiroute", "Foo", "myHeader", "original");
+        super.template.sendBodyAndHeader("direct:multiroute", "KaBoom", "myHeader", "original");
+
+        assertMockEndpointsSatisfied();
+    }
+
+    @Test
+    public void testDlqMultistepOriginal() {
+
+        final MockEndpoint mockResult = getMockEndpoint("mock:result");
+        mockResult.expectedMessageCount(1);
+        mockResult.expectedBodiesReceived("Foo");
+        mockResult.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNull();
+        mockResult.message(0).header("myHeader").isEqualTo("changed");
+
+        final MockEndpoint mockError = getMockEndpoint("mock:error");
+        mockError.expectedMessageCount(1);
+        mockError.expectedBodiesReceived("KaBoom");
+        mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
+        mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myFlakyRouteOriginal");
+        mockError.message(0).header("myHeader").isEqualTo("multistep");
+
+        super.template.sendBodyAndHeader("direct:multirouteOriginal", "Foo", "myHeader", "original");
+        super.template.sendBodyAndHeader("direct:multirouteOriginal", "KaBoom", "myHeader", "original");
+
 
     }
 }
