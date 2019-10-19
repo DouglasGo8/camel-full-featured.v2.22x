@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  */
 public class SlowOperationProcessor implements AsyncProcessor {
 
@@ -20,11 +20,21 @@ public class SlowOperationProcessor implements AsyncProcessor {
 
 
     @Override
-    public boolean process(Exchange exchange, AsyncCallback callback) {
+    public boolean process(Exchange exchange, AsyncCallback asyncCallback) {
         final boolean completedSynchronously = false;
 
         this.backgroundExecutor.submit(() -> {
             log.info("Running operation asynchronously");
+            try {
+                log.info("Doing something slowly");
+                Thread.sleep(200); // this runs slowly
+                log.info("...done");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            // the current thread will continue to process the exchange
+            // through the remainder of the route
+            asyncCallback.done(completedSynchronously);
         });
 
         return completedSynchronously;
@@ -32,6 +42,6 @@ public class SlowOperationProcessor implements AsyncProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-
+        throw new IllegalStateException("Should never be called");
     }
 }
