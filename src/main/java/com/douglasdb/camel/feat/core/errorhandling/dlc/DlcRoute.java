@@ -36,7 +36,7 @@ public class DlcRoute extends RouteBuilder {
                 .to("mock:result");
 
         from("seda:flakyrouteOriginal")
-                .routeId("myDlcSpecificRoute")
+                .routeId("myFlakyRouteOriginal")
                 .errorHandler(deadLetterChannel("seda:error").useOriginalMessage())
                 .setHeader("myHeader").constant("flaky")
                 .bean(FlakyProcessor.class);
@@ -46,6 +46,18 @@ public class DlcRoute extends RouteBuilder {
                 .setHeader("myHeader", constant("flaky"))
                 .bean(FlakyProcessor.class);
 
+        from("direct:useOriginal")
+                .routeId("myDlcOriginalRoute")
+                .errorHandler(deadLetterChannel("seda:error").useOriginalMessage())
+                .setHeader("myHeader").constant("changed")
+                .bean(FlakyProcessor.class)
+                .to("mock:result");
+
+        from("direct:routeSpecific")
+                .routeId("myDlcSpecificRoute")
+                .errorHandler(deadLetterChannel("seda:error"))
+                .bean(FlakyProcessor.class)
+                .to("mock:result");
 
         from("seda:error")
                 .routeId("myDlcChannelRoute")

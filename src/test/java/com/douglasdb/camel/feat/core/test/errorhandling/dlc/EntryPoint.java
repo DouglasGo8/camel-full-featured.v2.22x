@@ -65,7 +65,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
-    public void testDlqMultistepOriginal() {
+    public void testDlqMultistepOriginal() throws InterruptedException {
 
         final MockEndpoint mockResult = getMockEndpoint("mock:result");
         mockResult.expectedMessageCount(1);
@@ -78,11 +78,58 @@ public class EntryPoint extends CamelTestSupport {
         mockError.expectedBodiesReceived("KaBoom");
         mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
         mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myFlakyRouteOriginal");
-        mockError.message(0).header("myHeader").isEqualTo("multistep");
+        mockError.message(0).header("myHeader").isEqualTo("multistep"); // keep original values when using useOriginalMessage() option
 
         super.template.sendBodyAndHeader("direct:multirouteOriginal", "Foo", "myHeader", "original");
         super.template.sendBodyAndHeader("direct:multirouteOriginal", "KaBoom", "myHeader", "original");
 
+        assertMockEndpointsSatisfied();
 
     }
+
+    @Test
+    public void testDlqUseOriginal() throws InterruptedException {
+        final MockEndpoint mockResult = getMockEndpoint("mock:result");
+        mockResult.expectedMessageCount(1);
+        mockResult.expectedBodiesReceived("Foo");
+        mockResult.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNull();
+        mockResult.message(0).header("myHeader").isEqualTo("changed");
+
+        final MockEndpoint mockError = getMockEndpoint("mock:error");
+        mockError.expectedMessageCount(1);
+        mockError.expectedBodiesReceived("KaBoom");
+        mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
+        mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myDlcOriginalRoute");
+        mockError.message(0).header("myHeader").isEqualTo("original");
+
+        super.template.sendBodyAndHeader("direct:useOriginal", "Foo", "myHeader", "original");
+        super.template.sendBodyAndHeader("direct:useOriginal", "KaBoom", "myHeader", "original");
+
+        assertMockEndpointsSatisfied();
+    }
+
+
+    @Test
+    public void testDlqUseRouteSpecific() throws InterruptedException {
+
+        final MockEndpoint mockResult = getMockEndpoint("mock:result");
+        mockResult.expectedMessageCount(1);
+        mockResult.expectedBodiesReceived("Foo");
+        mockResult.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNull();
+       //mockResult.message(0).header("myHeader").isEqualTo("changed");
+
+        final MockEndpoint mockError = getMockEndpoint("mock:error");
+        mockError.expectedMessageCount(1);
+        mockError.expectedBodiesReceived("KaBoom");
+        mockError.message(0).exchangeProperty(Exchange.EXCEPTION_CAUGHT).isNotNull();
+        mockError.message(0).exchangeProperty(Exchange.FAILURE_ROUTE_ID).isEqualTo("myDlcSpecificRoute");
+        //mockError.message(0).header("myHeader").isEqualTo("original");
+
+        super.template.sendBodyAndHeader("direct:routeSpecific", "Foo", "myHeader", "original");
+        super.template.sendBodyAndHeader("direct:routeSpecific", "KaBoom", "myHeader", "original");
+
+        assertMockEndpointsSatisfied();
+    }
+
+
 }
