@@ -5,8 +5,6 @@ import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Exchanger;
-
 /**
  *
  */
@@ -22,7 +20,7 @@ public class FlakyProcessor {
 
         if ("KaBoom".equalsIgnoreCase(exchange.getIn().getBody(String.class))) {
             LOG.error("Throwing FlakyException");
-            throw new FlakyException("FlakyProcessor has gone Flaky");
+            throw new FlakyException(" -> Ouch!!! FlakyProcessor has gone Flaky");
         }
 
     }
