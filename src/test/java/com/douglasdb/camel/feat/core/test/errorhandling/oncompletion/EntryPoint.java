@@ -85,5 +85,23 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
+    @Test
+    public void testOnCompletionChoice() throws InterruptedException {
+        final MockEndpoint mockFailed = getMockEndpoint("mock:failed");
+        mockFailed.setExpectedMessageCount(1);
+        mockFailed.message(0).body().isEqualTo("this message should explode");
+
+        final MockEndpoint mockCompleted = getMockEndpoint("mock:completed");
+        mockCompleted.setExpectedMessageCount(1);
+        mockCompleted.message(0).body().isEqualTo("this message should complete");
+
+        // here we have 2 onCompletions set - one on a top-level route, and another on a sub-route
+        // both should be triggered depending on success or failure
+        super.template.asyncSendBody("direct:onCompletionChoice", "this message should explode");
+        super.template.asyncSendBody("direct:onCompletionChoice", "this message should complete");
+
+        assertMockEndpointsSatisfied();
+    }
+
 
 }

@@ -61,5 +61,24 @@ public class OnCompletionRoute extends RouteBuilder {
                 .end()
                 .to("direct:onCompletionFailure");
 
+        from("direct:onCompletionChoice")
+                .onCompletion()
+                    .to("direct:processCompletion")
+                .end()
+                .log("Original thread: ${threadName}")
+                .choice()
+                    .when(simple("${body} contains 'explode'"))
+                        .throwException(new IllegalArgumentException("Exchange caused explosion"))
+                .endChoice();
+
+        from("direct:processCompletion")
+                .log("onCompletion thread: ${threadName}")
+                .log("${body}")
+                .choice()
+                    .when(simple("${body} contains 'complete'"))
+                        .to("mock:completed")
+                    .otherwise()
+                        .to("mock:failed")
+                .endChoice();
     }
 }
