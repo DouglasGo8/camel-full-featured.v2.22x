@@ -3,10 +3,9 @@ package com.douglasdb.camel.feat.core.errorhandling.shared;
 /**
  *
  */
-public class FlakyException extends Exception {
+class SporadicException extends Exception {
 
-    FlakyException(String message) {
+    SporadicException(String message) {
         super(message);
     }
-
 }
