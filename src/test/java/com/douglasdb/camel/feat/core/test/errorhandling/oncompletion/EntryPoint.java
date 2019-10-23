@@ -3,7 +3,6 @@ package com.douglasdb.camel.feat.core.test.errorhandling.oncompletion;
 import com.douglasdb.camel.feat.core.errorhandling.oncompletion.OnCompletionOtherRoute;
 import com.douglasdb.camel.feat.core.errorhandling.oncompletion.OnCompletionRoute;
 import org.apache.camel.RoutesBuilder;
-import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
