@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress SpringFacetInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+					    http://www.springframework.org/schema/beans/spring-beans.xsd
+					    http://camel.apache.org/schema/spring
+					    http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean id="orderService"
+          class="com.douglasdb.camel.feat.core.errorhandling.reuse.OrderService"/>
+
+    <camel:camelContext id="camel" errorHandlerRef="dlc">
+
+        <camel:errorHandler id="dlc" type="DeadLetterChannel" deadLetterUri="mock:dead">
+        	<camel:redeliveryPolicy maximumRedeliveries="5"
+									redeliveryDelay="250"
+									retryAttemptedLogLevel="INFO"
+									backOffMultiplier="2"
+									useExponentialBackOff="true"/>
+        </camel:errorHandler>
+
+        <camel:route>
+            <camel:from uri="file://D:/.camel/data/orders?delay=10000"/>
+            <camel:bean ref="orderService" method="toCsv"/>
+            <camel:to uri="mock:file"/>
+            <camel:to uri="seda:queue.inbox"/>
+        </camel:route>
+
+        <camel:route errorHandlerRef="dlc">
+            <camel:from uri="seda:queue.inbox"/>
+            <camel:bean ref="orderService" method="validate"/>
+            <camel:bean ref="orderService" method="enrich"/>
+            <camel:to uri="mock:queue.order"/>
+        </camel:route>
+
+    </camel:camelContext>
+</beans>
