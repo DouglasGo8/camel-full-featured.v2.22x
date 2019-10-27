@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.errorhandling.onexception;
 
-import com.douglasdb.camel.feat.core.errorhandling.onexception.OnExceptionGapRoute;
+import com.douglasdb.camel.feat.core.errorhandling.onexception.OnExceptionFallbackRoute;
 import com.douglasdb.camel.feat.core.errorhandling.onexception.OrderFailedException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.RoutesBuilder;
@@ -20,7 +20,8 @@ public class EntryPoint extends CamelTestSupport {
     protected RoutesBuilder createRouteBuilder() throws Exception {
         context.setTracing(true);
         context.setStreamCaching(true);
-        return new OnExceptionGapRoute();
+        return new OnExceptionFallbackRoute();
+        // OnExceptionGapRoute();
         // OnExceptionWrappedMatchRoute();
         // OnExceptionDirectMatchRoute();
     }
@@ -61,6 +62,7 @@ public class EntryPoint extends CamelTestSupport {
     }
 
     @Test
+    @Ignore
     public void testOnExceptionGab() throws Exception {
 
         try {
@@ -78,5 +80,18 @@ public class EntryPoint extends CamelTestSupport {
         assertMockEndpointsSatisfied();
     }
 
+    @Test
+    public void testOnExceptionFallbackToErrorHandler() {
+
+        super.getMockEndpoint("mock:done").setExpectedMessageCount(0);
+
+        try {
+            super.template.requestBody("direct:order", "Camel in Action");
+            fail("Should throw an exception");
+        } catch (CamelExecutionException e) {
+            assertIsInstanceOf(OrderFailedException.class, e.getCause());
+            assertIsInstanceOf(ConnectException.class, e.getCause().getCause());
+        }
+    }
 
 }
