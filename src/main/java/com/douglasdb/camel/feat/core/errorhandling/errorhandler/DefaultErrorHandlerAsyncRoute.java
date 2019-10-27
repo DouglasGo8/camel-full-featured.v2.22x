@@ -12,11 +12,10 @@ public class DefaultErrorHandlerAsyncRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         errorHandler(defaultErrorHandler()
-                    .asyncDelayedRedelivery()
-                    .maximumRedeliveries(2)
-                    .log("---> ${threadName}")
-                    .redeliveryDelay(1000)
-                    .retryAttemptedLogLevel(LoggingLevel.WARN));
+                .asyncDelayedRedelivery()
+                .maximumRedeliveries(2)
+                .redeliveryDelay(1000)
+                .retryAttemptedLogLevel(LoggingLevel.WARN));
 
         from("seda:queue.inbox")
                 .bean("orderService", "validate")

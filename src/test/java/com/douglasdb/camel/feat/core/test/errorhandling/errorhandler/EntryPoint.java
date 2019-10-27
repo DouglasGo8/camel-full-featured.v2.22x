@@ -37,7 +37,7 @@ public class EntryPoint extends CamelTestSupport {
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
 
-        super.context.setStreamCaching(true);
+       // super.context.setStreamCaching(true);
 
         return new DefaultErrorHandlerAsyncRoute();
         //ScopeRoute();
@@ -154,7 +154,7 @@ public class EntryPoint extends CamelTestSupport {
 
         super.template.sendBody("seda:queue.inbox","amount=1,name=ActiveMQ in Action");
 
-        TimeUnit.SECONDS.sleep(30);
+        TimeUnit.SECONDS.sleep(10);
 
         assertMockEndpointsSatisfied();
     }
