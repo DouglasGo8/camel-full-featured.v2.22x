@@ -22,7 +22,7 @@
         </camel:errorHandler>
 
         <camel:route>
-            <camel:from uri="file://D:/.camel/data/orders?delay=10000"/>
+            <camel:from uri="file://F:/.camel/data/orders?delay=10000"/>
             <camel:bean ref="orderService" method="toCsv"/>
             <camel:to uri="mock:file"/>
             <camel:to uri="seda:queue.inbox"/>
