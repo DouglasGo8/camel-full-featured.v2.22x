@@ -9,6 +9,8 @@ public class BeanOne {
 
         System.out.println("Bean One!");
 
-        return "On Success";
+        throw new NullPointerException("Null pointer Exception here");
+
+        //return "On Success";
     }
 }
