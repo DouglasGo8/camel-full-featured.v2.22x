@@ -71,5 +71,11 @@ public class MultiCastOriginalMessageRoute extends RouteBuilder
                 .to("mock:result");
 
 
+
+
+
+        from("cache://enrichCache?timeToLiveSeconds=10&diskPersistent=true&diskExpiryThreadIntervalSeconds=10");
+
+
     }
 }
