@@ -5,23 +5,19 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * @author dbatista
  */
-public class HystrixTimeoutAndFallbackRoute extends RouteBuilder {
+public class HystrixTimeoutRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
 
+
         from("direct:start")
                 .hystrix()
-                    .hystrixConfiguration()
-                        .executionTimeoutInMilliseconds(2000)
+                    .hystrixConfiguration().executionTimeoutInMilliseconds(2000)
                     .end()
                     .log("Hystrix processing start: ${threadName}")
-                    //.toD("direct:${body}")
+                    .toD("direct:${body}")
                     .log("Hystrix processing end: ${threadName}")
-                .onFallback()
-                    .log("Hystrix fallback start: ${threadName}")
-                    .transform().constant("Fallback response")
-                    .log("Hystrix fallback end: ${threadName}")
                 .end()
                 .log("After Hystrix ${body}");
 
@@ -36,5 +32,8 @@ public class HystrixTimeoutAndFallbackRoute extends RouteBuilder {
                 .delay(3000)
                 .transform().constant("Slow response")
                 .log("Slow processing end: ${threadName}");
+
+
+
     }
 }
