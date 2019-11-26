@@ -16,7 +16,7 @@ public class HystrixTimeoutRoute extends RouteBuilder {
                     .hystrixConfiguration().executionTimeoutInMilliseconds(2000)
                     .end()
                     .log("Hystrix processing start: ${threadName}")
-                    .toD("direct:${body}")
+                    //.toD("direct:${body}")
                     .log("Hystrix processing end: ${threadName}")
                 .end()
                 .log("After Hystrix ${body}");
