@@ -22,7 +22,7 @@ https://github.com/camelinaction/camelinaction2
 
 docker run -d --name=activemq -p 8161:8161 -p 61616:61616 webcenter/activemq
 
-<!---
+
  **********************
  Insights to Enrichment
  **********************
@@ -94,4 +94,3 @@ public class EnrichRangeOne extends RouteBuilder {
 		}
 
 	}
--->
