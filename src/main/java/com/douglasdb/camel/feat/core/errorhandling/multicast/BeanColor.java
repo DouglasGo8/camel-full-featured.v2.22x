@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class BeanColor {
 
-    public void handleColor(JsonNode json) {
-        ((ObjectNode) json).put("color", "gray");
+    public void handleColor(JsonNode json, String color) {
+        ((ObjectNode) json).put("color", color);
     }
 }

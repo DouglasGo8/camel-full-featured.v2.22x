@@ -56,13 +56,20 @@ public class MultiCastOriginalMessageRoute extends RouteBuilder
                 .multicast()
                     .parallelProcessing(true).stopOnException()
                         .executorService(Executors.newFixedThreadPool(5))
-                    .bean(BeanColor.class)
-                    .bean(BeanBrand.class)
-                    .bean(BeanDoor.class)
+                   .to("direct:BY4")
+                    //.bean(BeanBrand.class)
+                    //.bean(BeanDoor.class)
                 .end()
-
+                .transform(simple("${exchangeProperty.payload}"))
                 .log("${body}")
                 .to("mock:result")
+                .end();
+
+        from("direct:BY4")
+                .setProperty("payload", simple("${body}"))
+                .setBody(constant("Hi"))
+                .log("${body}")
+                .bean(BeanColor.class, "handleColor(${exchangeProperty.payload}, 'gray')")
                 .end();
 
         from("direct:fail")
@@ -74,7 +81,7 @@ public class MultiCastOriginalMessageRoute extends RouteBuilder
 
 
 
-        from("cache://enrichCache?timeToLiveSeconds=10&diskPersistent=true&diskExpiryThreadIntervalSeconds=10");
+        //from("cache://enrichCache?timeToLiveSeconds=10&diskPersistent=true&diskExpiryThreadIntervalSeconds=10");
 
 
     }
