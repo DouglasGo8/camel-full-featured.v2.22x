@@ -1,5 +1,6 @@
 package com.douglasdb.camel.feat.core.errorhandling.multicast;
 
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 
