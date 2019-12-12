@@ -12,8 +12,8 @@ public class ThreadsDslRoute extends RouteBuilder {
 
         from("direct:in")
                 .log("Received ${body}:${threadName}")
-                .threads()
-                .delay(200)
+                .threads(5, 100)
+                .delay(1000)
                 .log("Processing ${body}:${threadName}")
                 .to("mock:out");
 

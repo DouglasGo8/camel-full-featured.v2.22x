@@ -257,7 +257,7 @@ public class EntryPoint extends CamelTestSupport {
         mockOut.setResultWaitTime(5000);
 
         for (int i = 0; i < messageCount; i++) {
-            CompletableFuture<Object> future = template.asyncCallbackRequestBody("direct:in",
+            super.template.asyncCallbackRequestBody("direct:in",
                     "Message[" + i + "]",
                     new Synchronization() {
                         @Override
