@@ -44,10 +44,8 @@ public class EnrichRangeOne extends RouteBuilder {
 				.timeout(1000)
 				.stopOnException()
 				.parallelProcessing(true)
-				.multicast()
-				    .bean(EnrichFromAU.class, enrichOfAU);
-				    .bean(EnrichFromBY.class, enrichOfBY4);
-				.end()
+			    .bean(EnrichFromAU.class, enrichOfAU);
+				.bean(EnrichFromBY.class, enrichOfBY4);
 			.end()
 			.to(MyCassandra.bean)
 		}
