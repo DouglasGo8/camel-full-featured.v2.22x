@@ -32,8 +32,8 @@ public class EnrichRangeOne extends RouteBuilder {
     @Override
 	public void configure() {
 
-        final String enrichOfAU(%{body}...);
-        final String enrichOfBY4(%{body}...);
+        final String enrichOfAU(${body}...);
+        final String enrichOfBY4(${body}...);
                 
 		from("WMQ01?concurrentConsumer=10")
 		    .bean(ReadyToEnrichment.class) // check merge release 3.0.0 <-> 3.0.1
