@@ -12,11 +12,9 @@ For more help see the Apache Camel documentation
 
 
 ## links
-https://github.com/CamelCookbook/camel-cookbook-examples
-
-https://github.com/camelinaction/camelinaction2
-
-
+<https://github.com/camelinaction/camelinaction2 />
+<https://github.com/apache/camel/tree/master/examples />
+<https://github.com/CamelCookbook/camel-cookbook-examples />
 
 ## CMds
 
