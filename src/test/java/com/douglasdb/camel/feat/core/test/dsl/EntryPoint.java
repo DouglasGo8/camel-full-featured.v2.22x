@@ -1,5 +1,6 @@
 package com.douglasdb.camel.feat.core.test.dsl;
 
+<<<<<<< HEAD
 import com.douglasdb.camel.feat.core.dsl.FileMoveRoute;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
@@ -46,4 +47,16 @@ public class EntryPoint extends CamelTestSupport {
         String content = context.getTypeConverter().convertTo(String.class, target);
         assertEquals("Hello World", content);
     }
+=======
+import org.apache.camel.test.junit4.CamelTestSupport;
+
+public class EntryPoint extends CamelTestSupport {
+
+    public void setUp() throws Exception {
+        // delete directories so we have a clean start
+        deleteDirectory("target/inbox");
+        deleteDirectory("target/outbox");
+        super.setUp();
+    }
+>>>>>>> 99853127246a0c2317b71478827adeee088d29ac
 }

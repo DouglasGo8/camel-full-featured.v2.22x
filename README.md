@@ -20,26 +20,24 @@ For more help see the Apache Camel documentation
 
 docker run -d --name=activemq -p 8161:8161 -p 61616:61616 webcenter/activemq
 
-
- **********************
- Insights to Enrichment
- **********************
+ *************************
+  Insights to Enrichment
+ *************************
 1.Transaction 4522 S  XPTO (Json origin)
-2.Transaction 2344 N  XXTS (Json origin)
+2.Transaction 2344 N  XPTS (Json origin)
 
 @Component
 public class EnrichRangeOne extends RouteBuilder {
-		
-		
-		
+
     @Override
 	public void configure() {
 
-        final String enrichOfAU(%{body}...);
-        final String enrichOfBY4(%{body}...);
+        final String enrichOfAU(${body}...);
+        final String enrichOfBY4(${body}...);
                 
 		from("WMQ01?concurrentConsumer=10")
 		    .bean(ReadyToEnrichment.class) // check merge release 3.0.0 <-> 3.0.1
+		    ..cacheOperations
 			.multicast()
 				.timeout(1000)
 				.stopOnException()
@@ -47,6 +45,17 @@ public class EnrichRangeOne extends RouteBuilder {
 			    .bean(EnrichFromAU.class, enrichOfAU);
 				.bean(EnrichFromBY.class, enrichOfBY4);
 			.end()
-			.to(MyCassandra.bean)
+			.multicast()
+			    .to(MyCassandraOne.class)
+			    .to(MyCassandraTwo.class)
+			.end()
+			
 		}
 	}
+
+public class enrichFromAU {
+
+    public void enrichOfAU(final JsonNode payload, ...) {
+        final RestTemplate templateOfApi = ...;
+    }
+}
