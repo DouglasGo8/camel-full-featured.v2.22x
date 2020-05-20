@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <context:property-placeholder location="classpath*:placeholder.properties"/>
+
+    <bean id="route" class="com.douglasdb.camel.feat.core.errorhandling.simulating.UseCaseRoute"/>
+
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <!-- use our route -->
+        <routeBuilder ref="route"/>
+        <endpoint id="fileEndpoint" uri="file://${file.dir}?delay=5000&amp;readLock=none"/>
+        <endpoint id="httpEndpoint" uri="http://${http.host}:${http.port}/rider"/>
+        <endpoint id="ftpEndpoint" uri="${ftp.url}"/>
+    </camelContext>
+
+
+</beans>
+
