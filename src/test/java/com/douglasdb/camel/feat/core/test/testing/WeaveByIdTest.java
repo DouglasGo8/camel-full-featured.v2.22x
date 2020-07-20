@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.testing;
 
-import com.douglasdb.camel.feat.core.test.advice.WeaveByIdRoute;
+import com.douglasdb.camel.feat.core.testing.advice.WeaveByIdRoute;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;

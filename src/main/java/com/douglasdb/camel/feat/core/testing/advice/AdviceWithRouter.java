@@ -1,4 +1,4 @@
-package com.douglasdb.camel.feat.core.test.advice;
+package com.douglasdb.camel.feat.core.testing.advice;
 
 import org.apache.camel.builder.RouteBuilder;
 

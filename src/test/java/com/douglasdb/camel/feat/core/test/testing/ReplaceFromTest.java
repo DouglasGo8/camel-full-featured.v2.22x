@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.testing;
 
-import com.douglasdb.camel.feat.core.test.advice.ReplaceFromRouter;
+import com.douglasdb.camel.feat.core.testing.advice.ReplaceFromRouter;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;

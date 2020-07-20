@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.testing;
 
-import com.douglasdb.camel.feat.core.test.advice.AdviceWithRouter;
+import com.douglasdb.camel.feat.core.testing.advice.AdviceWithRouter;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;
@@ -40,8 +40,7 @@ public class AdviceWithMockEndpointsTest extends CamelTestSupport {
         //
         super.template.sendBody("seda:quotes", "Camel rocks");
         super.template.sendBody("seda:quotes", "Bad donkey");
-
-
+        //
         assertMockEndpointsSatisfied();
     }
 }

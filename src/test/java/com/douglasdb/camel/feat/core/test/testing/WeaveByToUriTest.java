@@ -1,6 +1,6 @@
 package com.douglasdb.camel.feat.core.test.testing;
 
-import com.douglasdb.camel.feat.core.test.advice.WeaveByToUriRoute;
+import com.douglasdb.camel.feat.core.testing.advice.WeaveByToUriRoute;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;
