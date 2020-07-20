@@ -1,19 +1,13 @@
-package com.douglasdb.camel.feat.core.test.test;
+package com.douglasdb.camel.feat.core.test.testing;
 
 import com.douglasdb.camel.feat.core.test.advice.WeaveByIdRoute;
-import com.douglasdb.camel.feat.core.test.advice.WeaveByToUriRoute;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 
-import java.util.List;
-
-/**
- * @author dodiaba
- */
-public class WeaveByToUriTest extends CamelTestSupport {
+public class WeaveByIdTest extends CamelTestSupport {
 
     @Override
     public boolean isUseAdviceWith() {
@@ -23,30 +17,31 @@ public class WeaveByToUriTest extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new WeaveByToUriRoute();
+        return new WeaveByIdRoute();
     }
 
     @Test
-    public void testWeaveByToUri() throws Exception {
+    public void testWeaveById() throws Exception {
+
         final RouteDefinition route = super.context.getRouteDefinition("quotes");
 
         route.adviceWith(super.context, new AdviceWithRouteBuilder() {
+
             @Override
-            public void configure() {
-                weaveByToUri("seda:line").replace().to("mock:line");
+            public void configure() throws Exception {
+                weaveById("transform").replace()
+                        .transform().simple("${body.toUpperCase()}");
+                weaveAddLast().to("mock:result");
             }
         });
-        //
-        super.context.start();
-        //
-        super.getMockEndpoint("mock:line").expectedBodiesReceived("camel rules", "donkey is bad");
-        super.getMockEndpoint("mock:combined").expectedMessageCount(1);
 
-        super.getMockEndpoint("mock:combined").message(0).body().isInstanceOf(List.class);
+        context.start();
+
+        super.getMockEndpoint("mock:result").expectedBodiesReceived("HELLO CAMEL");
         //
-        super.template.sendBody("seda:quotes","Camel Rules,Donkey is Bad");
+        super.template.sendBody("seda:quotes", "Hello Camel");
         //
         assertMockEndpointsSatisfied();
-    }
 
+    }
 }

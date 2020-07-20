@@ -1,14 +1,13 @@
-package com.douglasdb.camel.feat.core.test.test;
+package com.douglasdb.camel.feat.core.test.testing;
 
-import com.douglasdb.camel.feat.core.test.advice.ReplaceFromRouter;
+import com.douglasdb.camel.feat.core.test.advice.AdviceWithRouter;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 
-public class ReplaceFromTest extends CamelTestSupport {
-
+public class AdviceWithMockEndpointsTest extends CamelTestSupport {
 
     @Override
     public boolean isUseAdviceWith() {
@@ -18,32 +17,30 @@ public class ReplaceFromTest extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new ReplaceFromRouter();
+        return new AdviceWithRouter();
     }
 
+
     @Test
-    public void testReplaceFromWithEndpoints() throws Exception {
-        RouteDefinition route = context.getRouteDefinition("quotes");
+    public void testMockEndpoints() throws Exception {
+
+        final RouteDefinition route = super.context.getRouteDefinition("quotes");
+
         route.adviceWith(context, new AdviceWithRouteBuilder() {
             @Override
             public void configure() throws Exception {
-                // replace the incoming endpoint with a direct endpoint
-                // we can easily call from unit test
-                replaceFromWith("direct:hitme");
-                // and then mock all seda endpoints os we can use mock endpoints
-                // to assert the test is correct
-                mockEndpoints("seda:*");
+                super.mockEndpoints();
             }
         });
-
-        // must start Camel after we are done using advice-with
+        // mandatory start Camel after we are done using advice-with
         super.context.start();
         //
         super.getMockEndpoint("mock:seda:camel").expectedBodiesReceived("Camel rocks");
         super.getMockEndpoint("mock:seda:other").expectedBodiesReceived("Bad donkey");
+        //
+        super.template.sendBody("seda:quotes", "Camel rocks");
+        super.template.sendBody("seda:quotes", "Bad donkey");
 
-        super.template.sendBody("direct:hitme", "Camel rocks");
-        super.template.sendBody("direct:hitme", "Bad donkey");
 
         assertMockEndpointsSatisfied();
     }
