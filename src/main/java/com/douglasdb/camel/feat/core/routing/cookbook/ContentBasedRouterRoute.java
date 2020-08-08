@@ -30,6 +30,16 @@ public class ContentBasedRouterRoute extends RouteBuilder {
 					.log("Other ${body}")
 			.end()
 			.log("Message ${body}");
+
+
+		from("direct:ch011Start")
+				.choice()
+					.when(simple("${body} contains 'Camel'"))
+						.setHeader("verified").constant(true)
+						.to("mock:camel")
+					.otherwise()
+						.to("mock:other")
+				.end();
 	}
 
 }

@@ -20,7 +20,7 @@ public class SetAggregationStrategy implements AggregationStrategy {
 
         final String body = newExchange.getIn().getBody(String.class);
 
-        /**
+        /*
          * first time there are no messages therefore oldExchange always be null
          */
         if (null == oldExchange) {
