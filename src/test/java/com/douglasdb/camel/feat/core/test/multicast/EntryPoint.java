@@ -119,7 +119,7 @@ public class EntryPoint extends CamelTestSupport {
             super.template.sendBodyAndHeaders("direct:in", "Payload " + i, headers);
         }
 
-        //mock.getReceivedExchanges().forEach(e -> e.getIn().getBody(Set.class).forEach(System.out::println));
+        // mock.getReceivedExchanges().forEach(e -> e.getIn().getBody(Set.class).forEach(System.out::println));
 
         assertMockEndpointsSatisfied();
 
