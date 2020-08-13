@@ -45,15 +45,6 @@ public class OrderWithMulticastRoute extends RouteBuilder {
                 .log("Production received order: ${header.CamelFileName}")
                 .to("mock:production");
 
-        from("direct:in")
-                .aggregate(header("group"), new SetAggregationStrategy())
-                   // .completionSize(header("size")).log("${threadName} - out")
-                    .completionPredicate(simple("${body.size} == 5"))
-                    .to("mock:bulk", "direct:received")
-                .end();
-
-        from("direct:received")
-                .log("Payload -> ${body}");
     }
 
 

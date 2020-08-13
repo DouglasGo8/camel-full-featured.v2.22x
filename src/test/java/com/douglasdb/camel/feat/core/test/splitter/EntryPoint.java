@@ -4,7 +4,8 @@ package com.douglasdb.camel.feat.core.test.splitter;
 import com.douglasdb.camel.feat.core.domain.splitter.ListWrapper;
 import com.douglasdb.camel.feat.core.splitter.Customer;
 import com.douglasdb.camel.feat.core.splitter.CustomerService;
-import com.douglasdb.camel.feat.core.splitter.SplitXmlNamespaceRoute;
+import com.douglasdb.camel.feat.core.splitter.SplitAggregatePartitionsRoute;
+import lombok.SneakyThrows;
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -21,7 +22,8 @@ public class EntryPoint extends CamelTestSupport {
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
-        return new SplitXmlNamespaceRoute();
+        return new SplitAggregatePartitionsRoute();
+        // SplitXmlNamespaceRoute();
         // SplitXmlNamespacesRoute();
         // SplitXmlRoute();
         // SplitReaggregateRoute();
@@ -505,6 +507,28 @@ public class EntryPoint extends CamelTestSupport {
 
         super.template.sendBody("direct:in",
                 new FileInputStream(fileName));
+
+        assertMockEndpointsSatisfied();
+
+
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testBindyPositions() {
+
+
+        final MockEndpoint mock = super.getMockEndpoint("mock:out");
+        mock.setExpectedMessageCount(3); // 3 Sub sets
+
+        final String body = "101 OnePlus vPro 777\n102 TwoPlus vPro 777\n" +
+                "103 OnePlus vPro 777\n104 TwoPlus vPro 777\n" +
+                "105 OnePlus vPro 777\n106TwoPlus vPro 777\n" +
+                "107 OnePlus vPro 777";
+
+
+        super.template.sendBody("direct:bindyRecord", body);
 
         assertMockEndpointsSatisfied();
 
