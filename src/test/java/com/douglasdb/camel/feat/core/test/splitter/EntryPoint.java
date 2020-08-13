@@ -522,10 +522,8 @@ public class EntryPoint extends CamelTestSupport {
         final MockEndpoint mock = super.getMockEndpoint("mock:out");
         mock.setExpectedMessageCount(3); // 3 Sub sets
 
-        final String body = "101 OnePlus vPro 777\n102 TwoPlus vPro 777\n" +
-                "103 OnePlus vPro 777\n104 TwoPlus vPro 777\n" +
-                "105 OnePlus vPro 777\n106TwoPlus vPro 777\n" +
-                "107 OnePlus vPro 777";
+        final String body = "101 OnePlus vPro 777\n102 TwoPlus vPro 777\n103 OnePlus vPro 777\n104 TwoPlus vPro 777\n" +
+                "105 OnePlus vPro 777\n106TwoPlus vPro 777\n107 OnePlus vPro 777";
 
 
         super.template.sendBody("direct:bindyRecord", body);

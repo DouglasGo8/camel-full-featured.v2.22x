@@ -10,6 +10,7 @@ import org.apache.camel.dataformat.bindy.fixed.BindyFixedLengthDataFormat;
 public class SplitAggregatePartitionsRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
+
         from("direct:bindyRecord")
                 .split().tokenize("\n").streaming().aggregationStrategy(new ArrayListAggregationStrategy())
                     .unmarshal(new BindyFixedLengthDataFormat(Record.class))

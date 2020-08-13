@@ -10,7 +10,7 @@ import java.util.List;
 public class PartitionBean {
     @Handler
     @SneakyThrows
-    public List<List<Record>> records(List<Record> records) {
+    public List<List<Record>> records(final List<Record> records) {
         return Lists.partition(records, 3);
     }
 }

@@ -10,7 +10,7 @@ import org.apache.camel.processor.aggregate.AbstractListAggregationStrategy;
 public class ArrayListAggregationStrategy extends AbstractListAggregationStrategy<Record> {
 
     @Override
-    public Record getValue(Exchange exchange) {
+    public Record getValue(final Exchange exchange) {
         return exchange.getIn().getBody(Record.class);
     }
 }
