@@ -47,7 +47,8 @@ public class OrderWithMulticastRoute extends RouteBuilder {
 
         from("direct:in")
                 .aggregate(header("group"), new SetAggregationStrategy())
-                    .completionSize(header("size")).log("${threadName} - out")
+                   // .completionSize(header("size")).log("${threadName} - out")
+                    .completionPredicate(simple("${body.size} == 5"))
                     .to("mock:bulk", "direct:received")
                 .end();
 

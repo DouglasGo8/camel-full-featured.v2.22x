@@ -12,10 +12,7 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author douglasdias
@@ -108,15 +105,16 @@ public class EntryPoint extends CamelTestSupport {
     public void bulkAggregationSize() {
 
         final MockEndpoint mock = super.getMockEndpoint("mock:bulk");
-        mock.setExpectedMessageCount(2); // two groups of 5 messages each
+        mock.setExpectedMessageCount(6); // two groups of 5 messages each
         //
         final Map<String, Object> headers = new HashMap<>();
-        //
-        headers.put("size", "5");
-        headers.put("group", "bulk");
 
-        for (int i = 0; i < 10; i++) {
-            super.template.sendBodyAndHeaders("direct:in", "Payload " + i, headers);
+        //
+        //headers.put("size", 5);
+        //headers.put("group", "bulk");
+
+        for (int i = 0; i < 11; i++) {
+            super.template.sendBodyAndHeader("direct:in", "Payload " + i, "group", header);
         }
 
         // mock.getReceivedExchanges().forEach(e -> e.getIn().getBody(Set.class).forEach(System.out::println));
