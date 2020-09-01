@@ -132,6 +132,8 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-xstream</artifactId>
         </dependency>
+
+
         <!-- is used when testing JSON to simulate a http server -->
         <dependency>
             <groupId>org.apache.camel</groupId>
